@@ -1,8 +1,0 @@
-{
-  "name": "simple-trade-tracker",
-  "version": "1.0.0",
-  "scripts": {
-    "frontend": "cd frontend && vite",
-    "heroku-postbuild": "cd frontend && npm install && npm run build"
-  }
-}
