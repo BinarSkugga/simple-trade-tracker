@@ -3,3 +3,5 @@ gunicorn
 uvicorn
 aiofiles
 requests
+psycopg[binary]
+passlib[argon2]

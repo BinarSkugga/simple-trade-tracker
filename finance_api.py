@@ -3,7 +3,7 @@ import os
 
 import requests
 
-from stock import Stock
+from models.stock import Stock
 
 HOST = 'yh-finance.p.rapidapi.com'
 headers = {

@@ -19,7 +19,7 @@ export default {
 <template>
   <div>
     <n-card title="Login" size="large">
-      <n-input placeholder="Mail" v-model:value="username"/>
+      <n-input placeholder="Username" v-model:value="username"/>
       <n-input type="password"
       show-password-on="mousedown"
       placeholder="Password" style="margin-top: 10px;" v-model:value="password"/>

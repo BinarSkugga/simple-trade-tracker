@@ -9,11 +9,11 @@ export default {
       if(this.dividend_yield > 5) return 'good';
     },
     payoutRatioClass() {
-      if(this.payout_ratio <= 3) return 'bad';
-      if(this.payout_ratio > 3 && this.payout_ratio < 5) return 'ok';
-      if(this.payout_ratio > 15 && this.payout_ratio < 20) return 'ok';
-      if(this.payout_ratio >= 5 && this.payout_ratio <= 15) return 'good';
-      if(this.payout_ratio >= 20) return 'bad';
+      if(this.payout_ratio <= 20) return 'bad';
+      if(this.payout_ratio > 20 && this.payout_ratio < 30) return 'ok';
+      if(this.payout_ratio > 50 && this.payout_ratio < 60) return 'ok';
+      if(this.payout_ratio >= 30 && this.payout_ratio <= 50) return 'good';
+      if(this.payout_ratio >= 60) return 'bad';
     }
   }
 }
