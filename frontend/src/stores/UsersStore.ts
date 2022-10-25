@@ -13,10 +13,10 @@ export const useUsersStore = defineStore({
         login(username: string, password: string) {
             api_login(username, password).then(response => {
                 this.token = response.data.access_token
-                localStorage.token = this.token
-                this.loggedIn = true
                 api_me(this.token!).then(response => {
                     this.user = response.data
+                    localStorage.token = this.token
+                    this.loggedIn = true
                 }).catch(error => {
                     this.loggedIn = false
                     this.token = null
@@ -29,7 +29,7 @@ export const useUsersStore = defineStore({
             })
         },
         tokenLogin() {
-            if(localStorage.token !== null) {
+            if(localStorage.token !== 'null') {
                 this.token = localStorage.token
                 api_me(this.token!).then(response => {
                     this.user = response.data
