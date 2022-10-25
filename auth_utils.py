@@ -40,9 +40,6 @@ def auth(required_role: str):
             if isinstance(token, str) and token.startswith('Bearer'):
                 token = token.split('Bearer ')[1]
 
-            # FIXME: Testing without login, remove this
-            if token is None:
-                token = new_token({'id': 1}, 0)
             decoded = decode_token(token)
             user = users.get(decoded['id'])
 
