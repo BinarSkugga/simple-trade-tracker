@@ -1,6 +1,7 @@
 import os.path
 
 from fastapi import FastAPI, HTTPException
+from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 from starlette.staticfiles import StaticFiles
 
@@ -38,6 +39,14 @@ users.upsert(admin)
 
 # Create FastAPI
 fastapi = FastAPI()
+
+fastapi.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @fastapi.post('/api/v1/login')

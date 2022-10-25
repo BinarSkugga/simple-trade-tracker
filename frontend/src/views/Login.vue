@@ -6,18 +6,24 @@ export default {
   name: "Login",
   data() {
     return {
+      renderReady: false,
       username: '',
       password: ''
     }
   },
   methods: {
-    ...mapActions(useUsersStore, {login: 'login'})
+    ...mapActions(useUsersStore, ['login', 'tokenLogin'])
+  },
+  mounted() {
+    // Auto login if a valid token is present
+    this.tokenLogin()
+    this.renderReady = true
   }
 }
 </script>
 
 <template>
-  <div>
+  <div v-if="renderReady">
     <n-card title="Login" size="large">
       <n-input placeholder="Username" v-model:value="username"/>
       <n-input type="password"
@@ -25,7 +31,7 @@ export default {
       placeholder="Password" style="margin-top: 10px;" v-model:value="password"/>
 
       <n-space justify="end">
-        <n-button type="success" style="margin-top: 10px;" @click="login(username, password)">Sign in</n-button>
+        <n-button type="success" style="margin-top: 10px;" @click="this.login(username, password)">Sign in</n-button>
       </n-space>
     </n-card>
   </div>

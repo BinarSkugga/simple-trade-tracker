@@ -2,7 +2,7 @@
 import Login from "@/views/Login.vue";
 import StockCard from "@/components/StockCard.vue";
 import {useStocksStore} from "@/stores/StocksStore";
-import {storeToRefs} from "pinia";
+import {mapActions, storeToRefs} from "pinia";
 import {useUsersStore} from "@/stores/UsersStore";
 
 export default {
@@ -16,7 +16,10 @@ export default {
       stocks: stocks,
       loggedIn
     }
-  }
+  },
+  methods: {
+    ...mapActions(useUsersStore, ['logout'])
+  },
 }
 </script>
 
@@ -24,6 +27,7 @@ export default {
   <div>
     <Login v-if="!loggedIn"/>
     <div v-else>
+        <n-button type="error" @click="this.logout()">Logout</n-button>
         <StockCard v-for="stock in stocks"
                    :symbol="stock.symbol"
                    :price="stock.price"
