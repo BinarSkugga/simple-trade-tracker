@@ -28,7 +28,7 @@ export default {
       </n-tag>
     </template>
     <n-space horizontal>
-      <n-statistic label="Yield" tabular-nums :class="dividendClass">
+      <n-statistic label="Yield" tabular-nums>
         <span :class="dividendClass">
           <n-number-animation
             ref="numberAnimationInstRef"

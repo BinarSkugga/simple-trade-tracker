@@ -1,5 +1,5 @@
 import dataclasses
-from typing import Union, Any
+from typing import Union, Any, Callable
 
 from psycopg.sql import SQL, Identifier, Literal, Composed
 
@@ -36,32 +36,52 @@ def dict_to_sql_set(data: dict, use_excluded: bool = False):
     return SQL(',').join(set_)
 
 
+def default_model_builder(model_class, record):
+    return model_class(*record)
+
+
+def default_model_dumper(model_class, entity):
+    return dataclasses.asdict(entity)
+
+
 class Repository:
-    def __init__(self, table_name: str, model_class):
+    def __init__(self, table_name: str, model_class, model_builder: Callable = default_model_builder,
+                 model_dumper: Callable = default_model_dumper):
         self.table_name = table_name
         self.model_class = model_class
+        self.model_builder = model_builder
+        self.model_dumper = model_dumper
 
         self.fields = {f.name: f for f in dataclasses.fields(model_class)}
 
     def list(self):
-        return execute_gen(SQL(SQL_LIST).format(
+        records = execute_gen(SQL(SQL_LIST).format(
             table=Identifier(self.table_name),
         ))
+
+        for record in records:
+            yield self.model_builder(self.model_class, record)
 
     def get(self, id: int):
         return next(self.find('id', id), None)
 
     def find(self, column: str, value: Any):
+        if isinstance(value, list):
+            sql_value = SQL('WHERE {column} IN ({value})').format(column=Identifier(column),
+                                                      value=SQL(',').join([Literal(v) for v in value]))
+        else:
+            sql_value = SQL('WHERE {column}={value}').format(column=Identifier(column), value=Literal(value))
+
         records = execute_gen(SQL(SQL_FIND).format(
             table=Identifier(self.table_name),
-            filters=SQL('WHERE {column}={value}').format(column=Identifier(column), value=Literal(value))
+            filters=sql_value
         ))
 
         for record in records:
-            yield self.model_class(*record)
+            yield self.model_builder(self.model_class, record)
 
     def upsert(self, entity):
-        data = dataclasses.asdict(entity)
+        data = self.model_dumper(self.model_class, entity)
         if entity.id == 0:
             entity.id = 'DEFAULT'
 

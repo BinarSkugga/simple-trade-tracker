@@ -7,6 +7,7 @@ SQL_SCHEMA = """
         portfolio_id BIGINT,
         stock_id BIGINT,
         count INTEGER,
+        strike FLOAT,
         date BIGINT,
 
         PRIMARY KEY (id),
@@ -26,4 +27,5 @@ class PortfolioEntry:
     portfolio_id: int
     stock_id: int
     count: int
+    strike: float
     date: int

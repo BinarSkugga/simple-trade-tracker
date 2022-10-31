@@ -1,4 +1,4 @@
-import secrets
+import os
 from typing import Optional
 
 import jwt
@@ -9,7 +9,7 @@ from starlette.requests import Request
 from models.user import User
 from repository import Repository
 
-TOKEN_SECRET = secrets.token_bytes(32)
+TOKEN_SECRET = os.environ.get('TOKEN_SECRET', 'blablablablopblopblop')
 
 
 def hash_password(password: str):

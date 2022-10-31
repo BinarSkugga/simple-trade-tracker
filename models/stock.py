@@ -17,7 +17,7 @@ SQL_SCHEMA = """
         beta FLOAT,
         
         dividend_yield FLOAT,
-        ex_dividend_data BIGINT,
+        ex_dividend_date BIGINT,
         payout_ratio FLOAT,
         
         debt_equity_ratio FLOAT,

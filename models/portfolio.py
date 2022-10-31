@@ -24,3 +24,10 @@ class Portfolio:
     user_id: int
 
     entries: List[PortfolioEntry] = None
+
+
+def portfolio_dumper(model_class, entity):
+    data = dataclasses.asdict(entity)
+    if 'entries' in data:
+        data.pop('entries')
+    return data

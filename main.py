@@ -1,4 +1,5 @@
 import os.path
+import time
 
 from fastapi import FastAPI, HTTPException
 from starlette.middleware.cors import CORSMiddleware
@@ -8,7 +9,7 @@ from starlette.staticfiles import StaticFiles
 from auth_utils import hash_password, verify_password, new_token, auth
 from database_utils import execute
 from models import stock, portfolio, portfolio_entry, user
-from models.portfolio import Portfolio
+from models.portfolio import Portfolio, portfolio_dumper
 from models.portfolio_entry import PortfolioEntry
 from models.stock import Stock
 from models.user import User
@@ -27,7 +28,7 @@ execute(portfolio_entry.SQL_SCHEMA, False)
 # Repositories
 users = Repository('user', User)
 stocks = Repository('stock', Stock)
-portfolios = Repository('portfolio', Portfolio)
+portfolios = Repository('portfolio', Portfolio, model_dumper=portfolio_dumper)
 portfolio_entries = Repository('portfolio_entry', PortfolioEntry)
 
 # Create Super Admin
@@ -36,6 +37,36 @@ admin = next(users.find('username', 'admin'), None)
 if admin is None:
     admin = User(0, 'admin', hash_password(ADMIN_PASSWORD), 'super_admin')
 users.upsert(admin)
+
+# Fake Stocks
+dfn = {"short_name": "DIVIDEND 15 SPLIT CORP", "long_name": "Dividend 15 Split Corp.", "symbol": "DFN.TO",
+       "sector": "Financial Services", "exchange": "TOR", "timezone": "America/Toronto", "currency": "CAD",
+       "price": 7.18, "beta": 1.591541, "dividend_yield": 0.1693, "ex_dividend_date": 1666915200,
+       "payout_ratio": 1.0619, "debt_equity_ratio": 1.747, "monthly_return": 0.10129783333333332}
+div = {"short_name": "DIVERSIFIED ROYALTY CORP", "long_name": "Diversified Royalty Corp.", "symbol": "DIV.TO",
+       "sector": "Industrials", "exchange": "TOR", "timezone": "America/Toronto", "currency": "CAD", "price": 2.92,
+       "beta": 1.595824, "dividend_yield": 0.081599995, "ex_dividend_date": 1665619200, "payout_ratio": 1.0356,
+       "debt_equity_ratio": 1.692, "monthly_return": 0.019855998783333332}
+stocks.upsert(Stock(id=1, **dfn))
+stocks.upsert(Stock(id=2, **div))
+
+# Fake Portfolios
+port1 = {"name": 'Test Portfolio 1', "user_id": 0}
+port2 = {"name": 'Test Portfolio 2', "user_id": 0}
+# port3 = {"name": 'Test Portfolio 3', "user_id": 1}
+
+portfolios.upsert(Portfolio(id=1, **port1))
+portfolios.upsert(Portfolio(id=2, **port2))
+# portfolios.upsert(Portfolio(id=3, **port3))
+
+# Fake Entries
+entry001 = {"portfolio_id": 1, "stock_id": 2, "count": 200, "strike": 2.18, "date": time.time() - 56}  # Bought 10 DIV in port1 at $2.18
+entry002 = {"portfolio_id": 1, "stock_id": 1, "count": 29, "strike": 7.89, "date": time.time() - 45}  # Bought 5 DFN in port1 at $7.89
+entry003 = {"portfolio_id": 1, "stock_id": 1, "count": -2, "strike": 7.56, "date": time.time() - 20}  # Sold 2 DFN in port1 for $7.56
+
+portfolio_entries.upsert(PortfolioEntry(id=1, **entry001))
+portfolio_entries.upsert(PortfolioEntry(id=2, **entry002))
+portfolio_entries.upsert(PortfolioEntry(id=3, **entry003))
 
 # Create FastAPI
 fastapi = FastAPI()
@@ -67,12 +98,18 @@ def me(request: Request):
 
 @fastapi.get('/api/v1/stocks', dependencies=[auth('default')])
 def list_stocks():
-    return stocks.list()
+    stocks_data = list(stocks.list())
+    return stocks_data
 
 
 @fastapi.get('/api/v1/portfolios', dependencies=[auth('default')])
 def get_my_portfolios(request: Request):
-    return portfolios.find('user_id', request.scope['user'].id)
+    portfolios_data = list(portfolios.find('user_id', request.scope['user'].id))
+    entries = list(portfolio_entries.find('portfolio_id', [port.id for port in portfolios_data]))
+    for port in portfolios_data:
+        port.entries = [e for e in entries if e.portfolio_id == port.id]
+
+    return portfolios_data
 
 
 fastapi.mount("/", StaticFiles(directory="frontend/dist", html=True), name="frontend")
