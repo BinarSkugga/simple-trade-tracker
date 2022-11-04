@@ -6,3 +6,4 @@ requests
 psycopg[binary]
 passlib[argon2]
 pyjwt
+pyotp

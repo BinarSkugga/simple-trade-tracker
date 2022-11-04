@@ -15,9 +15,20 @@ from models.stock import Stock
 from models.user import User
 from payloads.login import Login
 from repository import Repository
+from wealthsimple_utils import WealthSimpleAPI
 
 if not os.path.exists('frontend/dist'):
     os.mkdir('frontend/dist')
+
+# Connecting WealthSimple
+TOTP_SECRET = os.environ.get('TOTP_SECRET', 'blopblopblop')
+WS_ACCOUNT = os.environ.get('WS_ACCOUNT', 'test@bob.com:mypassword')
+WS_TFSA_ID = os.environ.get('WS_TFSA_ID', 'blopblop')
+
+email, password = WS_ACCOUNT.split(':', 1)
+ws = WealthSimpleAPI(email, password, TOTP_SECRET)
+ws.set_account(WS_TFSA_ID)
+
 
 # Create Tables
 execute(user.SQL_SCHEMA, False)
