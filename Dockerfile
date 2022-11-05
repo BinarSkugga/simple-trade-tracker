@@ -18,4 +18,4 @@ WORKDIR /app
 
 RUN pip install -U pip && pip install -r requirements.txt
 
-CMD gunicorn -w 3 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT main:fastapi
+CMD gunicorn -w 1 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT main:fastapi
