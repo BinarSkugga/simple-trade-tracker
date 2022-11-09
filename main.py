@@ -30,7 +30,7 @@ ws.set_account(WS_TFSA_ID)
 DROP_DB = os.environ.get('DROP_DB', 'false') == 'true'
 if DROP_DB:
     drop_database('trade_tracker')
-create_database('trade_tracker')
+    create_database('trade_tracker')
 
 # Create Tables
 execute(user.SQL_SCHEMA, fetch=False)
