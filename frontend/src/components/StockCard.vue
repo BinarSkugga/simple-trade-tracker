@@ -34,6 +34,7 @@ export default {
             ref="numberAnimationInstRef"
             :to="dividend_yield"
             :precision="2"
+            :duration="1500"
           />
         </span>
         <template #suffix>
@@ -46,6 +47,7 @@ export default {
             ref="numberAnimationInstRef"
             :to="payout_ratio"
             :precision="2"
+            :duration="1500"
           />
         </span>
         <template #suffix>
@@ -57,6 +59,7 @@ export default {
           ref="numberAnimationInstRef"
           :to="monthly_return"
           :precision="2"
+          :duration="1500"
         />
         <template #suffix>
           $

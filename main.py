@@ -1,5 +1,4 @@
 import os.path
-import time
 
 from fastapi import FastAPI, HTTPException
 from starlette.middleware.cors import CORSMiddleware
@@ -7,11 +6,9 @@ from starlette.requests import Request
 from starlette.staticfiles import StaticFiles
 
 from auth_utils import hash_password, verify_password, new_token, auth
-from database_utils import execute
-from models import stock, portfolio, portfolio_entry, user
-from models.portfolio import Portfolio, portfolio_dumper
-from models.portfolio_entry import PortfolioEntry
-from models.stock import Stock
+from database_utils import execute, drop_database, create_database
+from models import ws_stock, user
+from models.ws_stock import WSStock
 from models.user import User
 from payloads.login import Login
 from repository import Repository
@@ -29,55 +26,32 @@ email, password = WS_ACCOUNT.split(':', 1)
 ws = WealthSimpleAPI(email, password, TOTP_SECRET)
 ws.set_account(WS_TFSA_ID)
 
+# Init Database
+DROP_DB = os.environ.get('DROP_DB', 'false') == 'true'
+if DROP_DB:
+    drop_database('trade_tracker')
+create_database('trade_tracker')
 
 # Create Tables
-execute(user.SQL_SCHEMA, False)
-execute(stock.SQL_SCHEMA, False)
-execute(portfolio.SQL_SCHEMA, False)
-execute(portfolio_entry.SQL_SCHEMA, False)
+execute(user.SQL_SCHEMA, fetch=False)
+execute(ws_stock.SQL_SCHEMA, fetch=False)
 
 # Repositories
 users = Repository('user', User)
-stocks = Repository('stock', Stock)
-portfolios = Repository('portfolio', Portfolio, model_dumper=portfolio_dumper)
-portfolio_entries = Repository('portfolio_entry', PortfolioEntry)
+stocks = Repository('stock', WSStock)
 
 # Create Super Admin
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'blopblopblop')
 admin = next(users.find('username', 'admin'), None)
 if admin is None:
-    admin = User(0, 'admin', hash_password(ADMIN_PASSWORD), 'super_admin')
+    admin = User(1, 'admin', hash_password(ADMIN_PASSWORD), 'super_admin')
 users.upsert(admin)
 
-# Fake Stocks
-dfn = {"short_name": "DIVIDEND 15 SPLIT CORP", "long_name": "Dividend 15 Split Corp.", "symbol": "DFN.TO",
-       "sector": "Financial Services", "exchange": "TOR", "timezone": "America/Toronto", "currency": "CAD",
-       "price": 7.18, "beta": 1.591541, "dividend_yield": 0.1693, "ex_dividend_date": 1666915200,
-       "payout_ratio": 1.0619, "debt_equity_ratio": 1.747, "monthly_return": 0.10129783333333332}
-div = {"short_name": "DIVERSIFIED ROYALTY CORP", "long_name": "Diversified Royalty Corp.", "symbol": "DIV.TO",
-       "sector": "Industrials", "exchange": "TOR", "timezone": "America/Toronto", "currency": "CAD", "price": 2.92,
-       "beta": 1.595824, "dividend_yield": 0.081599995, "ex_dividend_date": 1665619200, "payout_ratio": 1.0356,
-       "debt_equity_ratio": 1.692, "monthly_return": 0.019855998783333332}
-stocks.upsert(Stock(id=1, **dfn))
-stocks.upsert(Stock(id=2, **div))
-
-# Fake Portfolios
-port1 = {"name": 'Test Portfolio 1', "user_id": 0}
-port2 = {"name": 'Test Portfolio 2', "user_id": 0}
-# port3 = {"name": 'Test Portfolio 3', "user_id": 1}
-
-portfolios.upsert(Portfolio(id=1, **port1))
-portfolios.upsert(Portfolio(id=2, **port2))
-# portfolios.upsert(Portfolio(id=3, **port3))
-
-# Fake Entries
-entry001 = {"portfolio_id": 1, "stock_id": 2, "count": 200, "strike": 2.18, "date": time.time() - 56}  # Bought 10 DIV in port1 at $2.18
-entry002 = {"portfolio_id": 1, "stock_id": 1, "count": 29, "strike": 7.89, "date": time.time() - 45}  # Bought 5 DFN in port1 at $7.89
-entry003 = {"portfolio_id": 1, "stock_id": 1, "count": -2, "strike": 7.56, "date": time.time() - 20}  # Sold 2 DFN in port1 for $7.56
-
-portfolio_entries.upsert(PortfolioEntry(id=1, **entry001))
-portfolio_entries.upsert(PortfolioEntry(id=2, **entry002))
-portfolio_entries.upsert(PortfolioEntry(id=3, **entry003))
+# Init Watchlist Stocks
+watchlist_stocks = ws.watchlist()
+stocks.truncate()
+for w_stock in watchlist_stocks:
+    stocks.upsert(w_stock)
 
 # Create FastAPI
 fastapi = FastAPI()
@@ -107,20 +81,17 @@ def me(request: Request):
     return request.scope['user']
 
 
-@fastapi.get('/api/v1/stocks', dependencies=[auth('default')])
-def list_stocks():
-    stocks_data = list(stocks.list())
-    return stocks_data
+@fastapi.get('/api/v1/watchlist', dependencies=[auth('default')])
+def watchlist():
+    return stocks.list()
 
 
-@fastapi.get('/api/v1/portfolios', dependencies=[auth('default')])
-def get_my_portfolios(request: Request):
-    portfolios_data = list(portfolios.find('user_id', request.scope['user'].id))
-    entries = list(portfolio_entries.find('portfolio_id', [port.id for port in portfolios_data]))
-    for port in portfolios_data:
-        port.entries = [e for e in entries if e.portfolio_id == port.id]
-
-    return portfolios_data
+@fastapi.get('/api/v1/watchlist/update', dependencies=[auth('default')])
+def watchlist_set():
+    watchlist_stocks = ws.watchlist()
+    stocks.truncate()
+    for w_stock in watchlist_stocks:
+        stocks.upsert(w_stock)
 
 
 fastapi.mount("/", StaticFiles(directory="frontend/dist", html=True), name="frontend")

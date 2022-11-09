@@ -3,7 +3,7 @@ from typing import Union, Any, Callable
 
 from psycopg.sql import SQL, Identifier, Literal, Composed
 
-from database_utils import execute, execute_gen
+from database_utils import execute, execute_gen, generate_id
 
 SQL_LIST = 'SELECT * FROM {table}'
 SQL_FIND = 'SELECT * FROM {table} {filters}'
@@ -81,6 +81,9 @@ class Repository:
             yield self.model_builder(self.model_class, record)
 
     def upsert(self, entity):
+        if entity.id is None or entity.id == 0:
+            entity.id = generate_id()
+
         data = self.model_dumper(self.model_class, entity)
         if entity.id == 0:
             entity.id = 'DEFAULT'
@@ -91,4 +94,10 @@ class Repository:
             values=dict_to_sql_values(data),
             update_set=dict_to_sql_set(data, use_excluded=True),
             conflict_columns=dict_to_sql_columns({'id': None})
-        ), False)
+        ), fetch=False)
+
+    def truncate(self):
+        execute(SQL(SQL_DELETE_FILTERED).format(
+            table=Identifier(self.table_name),
+            filters=SQL('WHERE 1=1')
+        ), fetch=False)

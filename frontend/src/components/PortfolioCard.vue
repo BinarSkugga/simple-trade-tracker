@@ -54,6 +54,7 @@ export default {
             :from="0.00"
             :to="totalMonthlyIncome"
             :precision="2"
+            :duration="1500"
           />$
         </span>
     </template>

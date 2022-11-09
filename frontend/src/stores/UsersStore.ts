@@ -31,7 +31,7 @@ export const useUsersStore = defineStore({
         tokenLogin() {
             if(localStorage.token !== 'null') {
                 this.token = localStorage.token
-                api_me(this.token!).then(response => {
+                return api_me(this.token!).then(response => {
                     this.user = response.data
                     this.loggedIn = true
                 }).catch(error => {
@@ -40,15 +40,22 @@ export const useUsersStore = defineStore({
                     localStorage.token = null
                 })
             } else {
-                this.loggedIn = false
-                this.token = null
-                localStorage.token = null
+                return new Promise((resolve, reject) => {
+                    this.loggedIn = false
+                    this.token = null
+                    localStorage.token = null
+
+                    reject('No token')
+                })
             }
         },
         logout() {
             this.loggedIn = false
             this.token = null
             localStorage.token = null
+        },
+        getUser() {
+            return this.user
         }
     }
 })

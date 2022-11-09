@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.sidebar {
+    @apply fixed top-0 left-0 h-screen w-[150px] border-r border-r-gray-200;
+}
+
+.card {
+    @apply p-5 border border-gray-300 rounded-md shadow-md;
+}
+
+.text-in {
+    @apply p-2 border border-gray-300 rounded focus:outline-none transition ease-in-out
+        focus:border-primary focus:shadow-primary focus:shadow-[0_0_0_1px];
+}
+
+.button {
+    @apply py-2 px-4 bg-primary text-white rounded uppercase text-sm font-sans
+        cursor-pointer inline select-none focus:outline-none focus:shadow-md;
+}

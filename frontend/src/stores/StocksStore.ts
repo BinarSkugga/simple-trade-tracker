@@ -16,7 +16,7 @@ export const useStocksStore = defineStore({
         },
         fetchStocks() {
             const {token} = storeToRefs(useUsersStore())
-            api_stocks(token.value!).then(response => {
+            return api_stocks(token.value!).then(response => {
                 this.stocks = response.data
             }).catch(error => {
 

@@ -1,42 +1,49 @@
 export class StockModel {
-    short_name: string
-    long_name: string
+    id: number
+    ws_id: string
+    name: string
 
+    type: string
     symbol: string
-    sector: string
-    exchange: string
-    timezone: string
     currency: string
+    exchange: string
+    tags: string
 
     price: number
-    beta: number  // lower than 2
 
-    dividend_yield: number  // as high as possible
+    can_use_fractional: boolean
+    buyable: boolean
+
+    eps: number
+    pe: number
+    beta: number
+    high52: number
+    low52: number
     ex_dividend_date: number
-    payout_ratio: number  // between 0.3 to 0.5
-
-    debt_equity_ratio: number  // lower than 2
-    // growth_estimate_5y: number  // between 0.05 and 0.15
-
-    monthly_return: number
+    dividend_yield: number
 
 
-    constructor(short_name: string, long_name: string, symbol: string, sector: string, exchange: string,
-                timezone: string, currency: string, price: number, beta: number, dividend_yield: number,
-                ex_dividend_date: number, payout_ratio: number, debt_equity_ratio: number, monthly_return: number) {
-        this.short_name = short_name;
-        this.long_name = long_name;
+    constructor(id: number, ws_id: string, name: string, type: string, symbol: string, currency: string,
+                exchange: string, tags: string, price: number, can_use_fractional: boolean, buyable: boolean,
+                eps: number, pe: number, beta: number, high52: number, low52: number, ex_dividend_date: number,
+                dividend_yield: number) {
+        this.id = id;
+        this.ws_id = ws_id;
+        this.name = name;
+        this.type = type;
         this.symbol = symbol;
-        this.sector = sector;
-        this.exchange = exchange;
-        this.timezone = timezone;
         this.currency = currency;
+        this.exchange = exchange;
+        this.tags = tags;
         this.price = price;
+        this.can_use_fractional = can_use_fractional;
+        this.buyable = buyable;
+        this.eps = eps;
+        this.pe = pe;
         this.beta = beta;
-        this.dividend_yield = dividend_yield;
+        this.high52 = high52;
+        this.low52 = low52;
         this.ex_dividend_date = ex_dividend_date;
-        this.payout_ratio = payout_ratio;
-        this.debt_equity_ratio = debt_equity_ratio;
-        this.monthly_return = monthly_return;
+        this.dividend_yield = dividend_yield;
     }
 }
