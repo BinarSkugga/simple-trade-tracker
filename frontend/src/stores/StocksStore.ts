@@ -12,6 +12,7 @@ export const useStocksStore = defineStore({
     }),
     actions: {
         getStocks() {
+            console.log(this.stocks)
             return this.stocks
         },
         fetchStocks() {

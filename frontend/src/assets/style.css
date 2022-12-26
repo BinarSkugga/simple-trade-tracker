@@ -6,8 +6,16 @@
     @apply fixed top-0 left-0 h-screen w-[150px] border-r border-r-gray-200;
 }
 
+.body {
+    @apply ml-[150px] p-3;
+}
+
 .card {
     @apply p-5 border border-gray-300 rounded-md shadow-md;
+}
+
+.stock-tag {
+    @apply text-[10px] bg-gray-200 text-gray-800 border-gray-800 px-1.5 py-0.5 rounded-full m-0.5;
 }
 
 .text-in {

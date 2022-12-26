@@ -159,6 +159,7 @@ class WealthSimpleAPI:
     def set_account(self, account_id: str):
         self.account_id = account_id
         self.account = next((account for account in self.accounts() if account.id == account_id), None)
+        print(f'Account selected: {self.account.id}')
 
     def refresh(self):
         self.key_ring = ws_refresh(self.key_ring.refresh)

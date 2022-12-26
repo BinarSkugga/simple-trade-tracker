@@ -1,14 +1,14 @@
 <script>
 import Login from "@/views/Login.vue";
-import MyPortfolios from "@/views/MyPortfolios.vue";
 import { ref } from 'vue'
 import {mapActions, storeToRefs} from "pinia";
 import {useUsersStore} from "@/stores/UsersStore";
 import {useStocksStore} from "@/stores/StocksStore";
+import WatchedStock from "@/components/WatchedStock.vue";
 
 export default {
   name: "Home",
-  components: {MyPortfolios, Login},
+  components: {Login, WatchedStock},
   data() {
     const {loggedIn} = storeToRefs(useUsersStore())
     const stocksFetched = ref(false)
@@ -19,7 +19,7 @@ export default {
   },
   methods: {
     ...mapActions(useUsersStore, ['logout', 'getUser']),
-    ...mapActions(useStocksStore, ['getStocks', "fetchStocks"]),
+    ...mapActions(useStocksStore, ['getStocks', "fetchStocks"])
   },
   mounted() {
     this.fetchStocks().then(_ => {
@@ -34,10 +34,15 @@ export default {
     <Login v-if="!loggedIn"/>
     <div v-else>
       <div class="sidebar flex flex-col justify-between">
-        <div>{{this.getUser().username}}</div>
+        <div class="p-1 text-center font-bold">{{this.getUser().username}}</div>
         <div v-ripple class="button m-2 flex-end text-center" type="button" @click="this.logout()">
           logout
         </div>
+      </div>
+
+      <div class="text-center ml-[150px] mt-4 font-bold text-lg">Watchlist</div>
+      <div class="body flex flex-wrap justify-center">
+        <WatchedStock :stock="stock" v-for="stock in this.getStocks()"/>
       </div>
     </div>
   </div>

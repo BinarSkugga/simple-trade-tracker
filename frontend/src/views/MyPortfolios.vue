@@ -1,12 +1,11 @@
 <script>
 import {mapActions} from "pinia";
 import {usePortfolioStore} from "@/stores/PortfoliosStore";
-import PortfolioCard from "@/components/PortfolioCard.vue";
 import {useStocksStore} from "@/stores/StocksStore";
 
 export default {
   name: "MyPortfolios",
-  components: {PortfolioCard},
+  components: {},
   methods: {
     ...mapActions(usePortfolioStore, ['fetchPortfolios', 'getPortfolios']),
     ...mapActions(useStocksStore, ['fetchStocks']),
@@ -20,7 +19,6 @@ export default {
 
 <template>
   <div class="centered">
-    <PortfolioCard v-for="portfolio in this.getPortfolios()" :name="portfolio.name" :entries="portfolio.entries"/>
   </div>
 </template>
 
