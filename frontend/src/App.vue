@@ -23,16 +23,24 @@ export default {
     ...mapActions(useUsersStore, ['logout', 'getUser']),
     toggleSidebar() {
       this.sidebarClosed = !this.sidebarClosed
+    },
+    openSidebar() {
+      this.sidebarClosed = false
+    },
+    closeSidebar() {
+      this.sidebarClosed = true
     }
   }
 }
 </script>
 
 <template>
-  <div>
+  <div v-touch:swipe.right="openSidebar" v-touch:swipe.left="closeSidebar">
     <Login v-if="!loggedIn"/>
     <div v-else class="flex flex-row">
-      <div class="sidebar flex flex-col justify-between bg-white" :class="{'closed': sidebarClosed}">
+      <div class="open-cover" v-if="!sidebarClosed"></div>
+      <div class="sidebar relative flex flex-col justify-between bg-white" :class="{'closed': sidebarClosed}">
+        <div class="closed-cover"></div>
         <div class="relative">
           <div @click="toggleSidebar()"
                class="sidebar-toggler text-[15px] align-middle leading-[27px] select-none">➤</div>

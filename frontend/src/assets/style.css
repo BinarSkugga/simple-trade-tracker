@@ -3,24 +3,36 @@
 @tailwind utilities;
 
 body, html {
-    @apply overflow-y-hidden;
+    @apply overflow-hidden;
+}
+
+.open-cover {
+    @apply fixed top-0 left-0 bg-black opacity-50 w-screen h-screen z-[5];
 }
 
 .sidebar {
-    @apply h-screen min-w-[200px] border-r border-r-gray-200 ml-[0px] transition-all ease-in-out;
+    @apply h-screen min-w-[200px] border-r bg-white border-r-gray-200 ml-[0px] transition-all ease-in-out z-10;
 }
 
 .sidebar.closed {
-    @apply ml-[-200px] transition-all ease-in-out;
+    @apply ml-[-180px] transition-all ease-in-out;
+}
+
+.closed-cover {
+    @apply absolute top-0 left-0 w-[100%] h-[100%] bg-white z-20 opacity-0 invisible transition-all ease-in-out;
+}
+
+.sidebar.closed .closed-cover {
+    @apply visible opacity-70 blur-sm transition-all ease-in-out;
 }
 
 .sidebar-toggler {
     @apply absolute top-[8px] right-[-14px] bg-primary text-white font-bold w-[28px] h-[28px] rounded-full text-center
-        transition-all ease-in-out cursor-pointer rotate-180;
+        transition-all ease-in-out cursor-pointer rotate-180 z-30;
 }
 
 .sidebar.closed .sidebar-toggler {
-    @apply right-[-38px] rotate-0 transition-all ease-in-out;
+    @apply rotate-0 transition-all ease-in-out;
 }
 
 .body {

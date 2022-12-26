@@ -80,19 +80,21 @@ export default {
       <button v-ripple class="button round ml-2" @click="updateStocksWithLoading()"
         :disabled="updatingStocks">↻</button>
     </div>
-    <div class="text-center mt-4 con-switch">
-      <input class="text-in w-[200px] mt-2 mr-4" type="text" placeholder="Search" v-model="searchString"/>
-      <div class="inline-block mb-[-5px]">
-        <vs-select v-model="sortField" class="mr-2" :color="primaryColor">
-          <vs-select-item :key="item.value" :text="item.text" :modelValue="item.value"
-                          v-for="item in filterChoices"/>
-        </vs-select>
-      </div>
-      <div class="inline-block mb-[-5px]">
-        <vs-switch v-model="reverseSort" :color="primaryColor">
-          <template #off>Ordered</template>
-          <template #on>Reversed</template>
-        </vs-switch>
+    <div class="text-center mt-4">
+      <input class="text-in w-[285px] m-2" type="text" placeholder="Search" v-model="searchString"/>
+      <div class="inline-block w-[285px] m-2">
+        <div class="inline-block mb-[-5px]">
+          <vs-select v-model="sortField" class="mr-2" :color="primaryColor">
+            <vs-select-item :key="item.value" :text="item.text" :modelValue="item.value"
+                            v-for="item in filterChoices"/>
+          </vs-select>
+        </div>
+        <div class="inline-block mb-[-5px]">
+          <vs-switch v-model="reverseSort" :color="primaryColor">
+            <template #off>Ordered</template>
+            <template #on>Reversed</template>
+          </vs-switch>
+        </div>
       </div>
     </div>
     <div class="body">
