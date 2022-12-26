@@ -14,8 +14,20 @@
     @apply p-5 border border-gray-300 rounded-md shadow-md;
 }
 
-.stock-tag {
-    @apply text-[10px] bg-gray-200 text-gray-800 border-gray-800 px-1.5 py-0.5 rounded-full m-0.5;
+.stock-tag-gray {
+    @apply text-[10px] bg-gray-200 text-gray-800 px-1.5 py-0.5 rounded-full m-0.5;
+}
+
+.stock-tag-blue {
+    @apply text-[10px] bg-blue-200 text-blue-800 px-1.5 py-0.5 rounded-full m-0.5
+}
+
+.stock-tag-red {
+    @apply text-[10px] bg-red-200 text-red-800 px-1.5 py-0.5 rounded-full m-0.5
+}
+
+.separator {
+    @apply h-1 border-t-gray-800 border-b-[1px] py-1;
 }
 
 .text-in {

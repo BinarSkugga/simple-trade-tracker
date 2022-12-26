@@ -34,11 +34,17 @@ export default {
         </span>
       </div>
       <div class="flex justify-between">
-        <span class="text-[10px] truncate align-middle pt-1.5 w-[200px]">{{stock.name}}</span>
         <div>
-          <span class="stock-tag">{{stock.exchange}}</span>
-          <span class="stock-tag">{{stock.currency}}</span>
+          <span :class="[stock.buyable ? 'stock-tag-blue':'stock-tag-red']">Buyable</span>
+          <span :class="[stock.can_use_fractional ? 'stock-tag-blue':'stock-tag-red']">Fractional</span>
         </div>
+        <div>
+          <span class="stock-tag-gray">{{stock.exchange}}</span>
+          <span class="stock-tag-gray">{{stock.currency}}</span>
+        </div>
+      </div>
+      <div class="text-center mt-3">
+        <span class="text-[10px] truncate align-middle text-gray-500 pt-1.5 w-[200px]">{{stock.name}}</span>
       </div>
     </div>
 </template>
