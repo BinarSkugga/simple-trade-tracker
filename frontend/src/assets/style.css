@@ -7,20 +7,20 @@ body, html {
 }
 
 .sidebar {
-    @apply h-screen min-w-[150px] border-r border-r-gray-200 ml-[0px] transition-all ease-in-out;
+    @apply h-screen min-w-[200px] border-r border-r-gray-200 ml-[0px] transition-all ease-in-out;
 }
 
 .sidebar.closed {
-    @apply ml-[-150px] transition-all ease-in-out;
+    @apply ml-[-200px] transition-all ease-in-out;
 }
 
 .sidebar-toggler {
-    @apply absolute top-[5px] right-[-13px] bg-blue-500 text-white font-bold w-[25px] h-[25px] rounded-full text-center
+    @apply absolute top-[8px] right-[-14px] bg-primary text-white font-bold w-[28px] h-[28px] rounded-full text-center
         transition-all ease-in-out cursor-pointer rotate-180;
 }
 
 .sidebar.closed .sidebar-toggler {
-    @apply right-[-30px] rotate-0 transition-all ease-in-out;
+    @apply right-[-38px] rotate-0 transition-all ease-in-out;
 }
 
 .body {
@@ -32,7 +32,7 @@ body, html {
 }
 
 .side-menu-item {
-    @apply p-2 border-gray-300 border-b-[1px] border-t-[1px] hover:bg-gray-300 cursor-pointer
+    @apply px-2 py-5 border-gray-300 border-b-[1px] border-t-[1px] hover:bg-gray-300 cursor-pointer
         transition ease-in-out block;
 
 }
@@ -42,7 +42,7 @@ body, html {
 }
 
 .side-menu-item.selected {
-    @apply border-l-[5px] border-l-blue-500;
+    @apply border-l-[5px] border-l-primary;
 }
 
 .stock-tag-gray {
@@ -69,4 +69,8 @@ body, html {
 .button {
     @apply py-2 px-4 bg-primary text-white rounded uppercase text-sm font-sans
         cursor-pointer inline select-none focus:outline-none focus:shadow-md;
+}
+
+.button.round {
+    @apply rounded-full p-2 w-9 h-9;
 }

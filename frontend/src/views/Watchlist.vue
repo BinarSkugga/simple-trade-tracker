@@ -22,7 +22,7 @@ export default {
   },
   methods: {
     ...mapActions(useUsersStore, ['logout', 'getUser']),
-    ...mapActions(useStocksStore, ['getStocks', "fetchStocks"]),
+    ...mapActions(useStocksStore, ['getStocks', "fetchStocks", "updateStocks"]),
     getMonthlyIncome(stock) {
       return (stock.dividend_yield * stock.price / 12)
     },
@@ -68,7 +68,10 @@ export default {
 
 <template>
   <div>
-    <div class="text-center mt-4 font-bold text-lg">Watchlist</div>
+    <div class="text-center mt-4 font-bold text-lg">
+      Watchlist
+      <div v-ripple class="button round ml-2" type="button" @click="updateStocks()">↻</div>
+    </div>
     <div class="text-center mt-3">
       Sort:
       <select v-model="sortField" class="mr-2">

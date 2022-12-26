@@ -44,6 +44,10 @@ def ws_refresh(refresh_token: str) -> WSTokenKeyring:
         'refresh_token': refresh_token
     })
 
+    if response.headers.get('X-Access-Token-Expires') is None:
+        os.remove('refresh.txt')
+        return None
+
     return WSTokenKeyring(**{
         'access': response.headers.get('X-Access-Token'),
         'refresh': response.headers.get('X-Refresh-Token'),
@@ -143,6 +147,8 @@ class WealthSimpleAPI:
     def __init__(self, email: str, password: str, otp_secret: str):
         self.email = email
         self.totp = TOTP(otp_secret)
+        self.email = email
+        self.password = password
         self.account_id = None
         self.account = None
 
@@ -161,7 +167,12 @@ class WealthSimpleAPI:
         print(f'Account selected: {self.account.id}')
 
     def refresh(self):
-        self.key_ring = ws_refresh(self.key_ring.refresh)
+        key_ring = ws_refresh(self.key_ring.refresh)
+
+        if key_ring is None:
+            self.key_ring = ws_login(self.email, self.password, self.totp.now())
+        else:
+            self.key_ring = ws_refresh(self.key_ring.refresh)
 
     def auto_refresh(self):
         if self.key_ring.expire <= time.time():

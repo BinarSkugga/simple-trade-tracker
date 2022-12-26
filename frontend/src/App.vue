@@ -35,7 +35,7 @@ export default {
       <div class="sidebar flex flex-col justify-between bg-white" :class="{'closed': sidebarClosed}">
         <div class="relative">
           <div @click="toggleSidebar()"
-               class="sidebar-toggler text-sm pt-[2px]">➤</div>
+               class="sidebar-toggler text-[15px] align-middle leading-[27px] select-none">➤</div>
           <div class="p-3 text-center font-bold">{{getUser().username}}</div>
           <router-link to="/" class="side-menu-item" :class="{'selected': currentRoute === 'watchlist'}">
             Watchlist
