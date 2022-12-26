@@ -83,22 +83,13 @@ def ws_positions(access_token: str, account_id: str) -> List[WSPosition]:
                             headers={'Authorization': access_token})
     body = response.json()
     return [WSPosition(**{
-        'id': position['id'],
-        'currency': position['currency'],
-        'symbol': position['stock']['symbol'],
-        'name': position['stock']['name'],
-        'exchange': position['stock']['primary_exchange'],
-        'type': position['security_type'],
+        'id': None,
+        'ws_id': position['id'],
 
         'quantity': position['quantity'],
         'sellable_quantity': position['sellable_quantity'],
         'book_value': position['book_value']['amount'],
-        'market_value': float(position['quote']['amount']) * position['quantity'],
-
-        'available': position['ws_trade_eligible'],
-        'buyable': position['buyable'],
-        'active': position['active'],
-        'volatile': position['is_volatile']
+        'market_value': float(position['quote']['amount']) * position['quantity']
     }) for position in body['results']]
 
 

@@ -1,5 +1,4 @@
 <script>
-import Login from "@/views/Login.vue";
 import { ref } from 'vue'
 import {mapActions} from "pinia";
 import {useUsersStore} from "@/stores/UsersStore";
@@ -8,7 +7,7 @@ import WatchedStock from "@/components/WatchedStock.vue";
 
 export default {
   name: "watchlist",
-  components: {Login, WatchedStock},
+  components: {WatchedStock},
   data() {
     const stocksFetched = ref(false)
     const updatingStocks = ref(false)

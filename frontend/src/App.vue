@@ -23,19 +23,13 @@ export default {
     ...mapActions(useUsersStore, ['logout', 'getUser']),
     toggleSidebar() {
       this.sidebarClosed = !this.sidebarClosed
-    },
-    openSidebar() {
-      this.sidebarClosed = false
-    },
-    closeSidebar() {
-      this.sidebarClosed = true
     }
   }
 }
 </script>
 
 <template>
-  <div v-touch:swipe.right="openSidebar" v-touch:swipe.left="closeSidebar">
+  <div>
     <Login v-if="!loggedIn"/>
     <div v-else class="flex flex-row">
       <div class="open-cover" v-if="!sidebarClosed"></div>
@@ -45,10 +39,10 @@ export default {
           <div @click="toggleSidebar()"
                class="sidebar-toggler text-[15px] align-middle leading-[27px] select-none">➤</div>
           <div class="p-3 text-center font-bold">{{getUser().username}}</div>
-          <router-link to="/" class="side-menu-item" :class="{'selected': currentRoute === 'watchlist'}">
+          <router-link to="/" class="side-menu-item" :class="{'selected': currentRoute === 'watchlist'}" @click="toggleSidebar">
             Watchlist
           </router-link>
-          <router-link to="/portfolio"  class="side-menu-item" :class="{'selected': currentRoute === 'portfolio'}">
+          <router-link to="/portfolio"  class="side-menu-item" :class="{'selected': currentRoute === 'portfolio'}" @click="toggleSidebar">
             Portfolio
           </router-link>
         </div>

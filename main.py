@@ -7,7 +7,8 @@ from starlette.staticfiles import StaticFiles
 
 from auth_utils import hash_password, verify_password, new_token, auth
 from database_utils import execute, drop_database, create_database
-from models import ws_stock, user
+from models import ws_stock, user, ws_position
+from models.ws_position import WSPosition
 from models.ws_stock import WSStock
 from models.user import User
 from payloads.login import Login
@@ -39,10 +40,12 @@ except:
 # Create Tables
 execute(user.SQL_SCHEMA, fetch=False)
 execute(ws_stock.SQL_SCHEMA, fetch=False)
+execute(ws_position.SQL_SCHEMA, fetch=False)
 
 # Repositories
 users = Repository('user', User)
 stocks = Repository('stock', WSStock)
+positions = Repository('position', WSPosition)
 
 # Create Super Admin
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'blopblopblop')
@@ -56,6 +59,12 @@ watchlist_stocks = ws.watchlist()
 stocks.truncate()
 for w_stock in watchlist_stocks:
     stocks.upsert(w_stock)
+
+# Init Positions
+ws_positions = ws.positions()
+positions.truncate()
+for position in ws_positions:
+    positions.upsert(position)
 
 # Create FastAPI
 fastapi = FastAPI()
@@ -86,7 +95,7 @@ def me(request: Request):
 
 
 @fastapi.get('/api/v1/watchlist', dependencies=[auth('default')])
-def watchlist():
+def watchlist_get():
     return stocks.list()
 
 
@@ -98,6 +107,21 @@ def watchlist_set():
         stocks.upsert(w_stock)
 
     return stocks.list()
+
+
+@fastapi.get('/api/v1/positions', dependencies=[auth('default')])
+def positions_get():
+    return positions.list()
+
+
+@fastapi.get('/api/v1/positions/update', dependencies=[auth('default')])
+def positions_set():
+    ws_positions = ws.positions()
+    positions.truncate()
+    for position in ws_positions:
+        positions.upsert(position)
+
+    return positions.list()
 
 
 fastapi.mount("/", StaticFiles(directory="frontend/dist", html=True), name="frontend")
