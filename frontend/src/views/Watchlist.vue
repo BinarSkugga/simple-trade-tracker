@@ -27,7 +27,7 @@ export default {
     return {
       stocksFetched, updatingStocks,
       sortField, reverseSort, filterChoices,
-      twPrimary: twPrimary
+      primaryColor: twPrimary
     }
   },
   methods: {
@@ -91,13 +91,13 @@ export default {
     </div>
     <div class="text-center mt-4 con-switch">
       <div class="inline-block mb-[-5px]">
-        <vs-select v-model="sortField" class="mr-2" :color="twPrimary">
+        <vs-select v-model="sortField" class="mr-2" :color="primaryColor">
           <vs-select-item :key="item.value" :text="item.text" :modelValue="item.value"
                           v-for="item in filterChoices"/>
         </vs-select>
       </div>
       <div class="inline-block mb-[-5px]">
-        <vs-switch v-model="reverseSort" :color="twPrimary">
+        <vs-switch v-model="reverseSort" :color="primaryColor">
           <template #off>Ordered</template>
           <template #on>Reversed</template>
         </vs-switch>
@@ -108,7 +108,7 @@ export default {
         <WatchedStock :stock="stock" v-for="stock in this.sortedStock(this.sortField, this.reverseSort)"/>
       </div>
       <div class="flex justify-center p-10 pt-[100px]" v-else>
-        <vs-progress class="min-w-[300px] max-w-[700px]" indeterminate :color="twPrimary">primary</vs-progress>
+        <vs-progress class="min-w-[300px] max-w-[700px]" indeterminate :color="primaryColor">primary</vs-progress>
       </div>
     </div>
   </div>
