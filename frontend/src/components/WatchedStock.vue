@@ -17,7 +17,7 @@ export default {
 </script>
 
 <template>
-  <div class="card m-2 w-[350px]">
+  <div class="card m-2 min-w-[300px] max-w-[300px]">
       <div class="flex justify-between">
         <span class="font-bold">{{stock.symbol}}</span>
         <span class="font-bold text-sm">${{stock.price}}</span>
@@ -44,7 +44,7 @@ export default {
         </div>
       </div>
       <div class="text-center mt-3">
-        <span class="text-[10px] truncate align-middle text-gray-500 pt-1.5 w-[200px]">{{stock.name}}</span>
+        <span class="text-[10px] inline-block text-gray-500 pt-1.5 w-[250px] truncate">{{stock.name}}</span>
       </div>
     </div>
 </template>

@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+body, html {
+    @apply overflow-y-hidden;
+}
+
 .sidebar {
     @apply h-screen min-w-[150px] border-r border-r-gray-200 ml-[0px] transition-all ease-in-out;
 }

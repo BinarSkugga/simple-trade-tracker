@@ -12,8 +12,8 @@ export default {
   data() {
     const stocksFetched = ref(false)
 
-    const sortField = ref('dividend_yield')
-    const reverseSort = ref(true)
+    const sortField = ref('symbol')
+    const reverseSort = ref(false)
 
     return {
       stocksFetched,

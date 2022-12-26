@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Watchlist from "../views/Watchlist.vue";
-import Portfolio from "../views/portfolio.vue";
+
+const Watchlist = () => import('../views/Watchlist.vue')
+const Portfolio = () => import('../views/Portfolio.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

@@ -10,7 +10,7 @@ export default {
   components: {Login, RouterView},
   data() {
     const {loggedIn} = storeToRefs(useUsersStore())
-    const sidebarClosed = ref(false)
+    const sidebarClosed = ref(true)
 
     return {loggedIn, sidebarClosed}
   },
@@ -50,7 +50,7 @@ export default {
         </div>
       </div>
 
-      <RouterView/>
+      <RouterView class="h-screen overflow-y-scroll"/>
     </div>
   </div>
 </template>
