@@ -7,6 +7,7 @@ Personnal Portfolio Tracker
 - [X] Manually update your watchlist
 - [ ] Viewing your current positions
 - [ ] Filter and search your positions
+- [ ] View details on a specific stock
 - [ ] Get key stats for dividend oriented investing on your positions
 - [ ] Allow persistent ammending changes to a stock information to complement the WS api
 - [ ] Generate over time value changes and dividend changes graphs
@@ -19,6 +20,7 @@ Personnal Portfolio Tracker
   - [ ] Dividend payment reliability
   - [ ] Cashflow and dividend payout
  - [ ] Automation pipelines (to be defined)
+ - [ ] Project the portfolio into the future
 
 ## UI Examples
 ![image](https://user-images.githubusercontent.com/7575628/209530574-c5936f13-9fe2-4d42-8af5-9384acc7a629.png)
