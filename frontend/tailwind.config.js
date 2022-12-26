@@ -5,6 +5,9 @@ const alpha = (clr, val) => Color(clr).alpha(val).rgb().string()
 const lighten = (clr, val) => Color(clr).lighten(val).rgb().string()
 const darken = (clr, val) => Color(clr).darken(val).rgb().string()
 
+
+const primary = '#e74c3c'
+
 module.exports = {
     content: [
         "./index.html",
@@ -14,9 +17,9 @@ module.exports = {
         extend: {
             colors: {
                 primary: {
-                    DEFAULT: '#1abc9c',
-                    lighter: lighten('#1abc9c', 1.05),
-                    darker: darken('#1abc9c', 0.5)
+                    DEFAULT: primary,
+                    lighter: lighten(primary, 1.05),
+                    darker: darken(primary, 0.5)
                 }
             }
         }

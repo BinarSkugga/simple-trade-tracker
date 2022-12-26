@@ -57,12 +57,16 @@ body, html {
     @apply text-[10px] bg-red-200 text-red-800 px-1.5 py-0.5 rounded-full m-0.5
 }
 
+.stock-tag-green {
+    @apply text-[10px] bg-green-200 text-green-800 px-1.5 py-0.5 rounded-full m-0.5
+}
+
 .separator {
     @apply h-1 border-t-gray-800 border-b-[1px] py-1;
 }
 
 .text-in {
-    @apply p-2 border border-gray-300 rounded focus:outline-none transition ease-in-out
+    @apply p-[7px] border border-gray-300 rounded focus:outline-none transition ease-in-out
         focus:border-primary focus:shadow-primary focus:shadow-[0_0_0_1px];
 }
 

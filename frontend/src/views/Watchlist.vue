@@ -13,8 +13,9 @@ export default {
     const stocksFetched = ref(false)
     const updatingStocks = ref(false)
 
-    let sortField = ref('symbol')
+    const sortField = ref('symbol')
     const reverseSort = ref(false)
+    const searchString = ref('')
 
     const filterChoices = [
       {text: 'Symbol', value: 'symbol'},
@@ -27,7 +28,7 @@ export default {
     return {
       stocksFetched, updatingStocks,
       sortField, reverseSort, filterChoices,
-      primaryColor: twPrimary
+      primaryColor: twPrimary, searchString
     }
   },
   methods: {
@@ -36,23 +37,25 @@ export default {
     getMonthlyIncome(stock) {
       return (stock.dividend_yield * stock.price / 12)
     },
-    sortedStock(field, reversed = true) {
-      return this.getStocks().sort((a, b) => {
-        if(['getMonthlyIncome'].includes(field)) {
-          if(reversed)
-            return this[field](b) - this[field](a)
+    mangleStocks(field, reverse, search) {
+      const stocks = this.getStocks()
+      const upperSearch = search.toUpperCase()
+
+      let sortedStocks = stocks.slice().sort((a, b) => {
+        if(['getMonthlyIncome'].includes(field))
           return this[field](a) - this[field](b)
-        }
-
-        if(['name', 'symbol'].includes(field)) {
-          if(reversed)
-            return a[field].localeCompare(b[field]) * -1
+        if(['name', 'symbol'].includes(field))
           return a[field].localeCompare(b[field])
-        }
 
-        if(reversed)
-          return b[field] - a[field]
         return a[field] - b[field]
+      })
+
+      if(reverse) sortedStocks = sortedStocks.slice().reverse()
+
+      return sortedStocks.filter(stock => {
+        if(upperSearch.length === 0) return true
+        return stock.name.toUpperCase().indexOf(upperSearch) > -1
+            || stock.symbol.toUpperCase().indexOf(upperSearch) > -1
       })
     },
     updateStocksWithLoading() {
@@ -62,18 +65,6 @@ export default {
       })
     }
   },
-  // computed: {
-  //   averageYield() {
-  //     return (this.getStocks().reduce((a, b) => {
-  //       return a + b.dividend_yield
-  //     }, 0) / this.getStocks().length * 100).toFixed(2)
-  //   },
-  //   averageMonthlyIncome() {
-  //     return (this.getStocks().reduce((a, b) => {
-  //       return a + this.getMonthlyIncome(b)
-  //     }, 0) / this.getStocks().length).toFixed(2)
-  //   }
-  // },
   mounted() {
     this.fetchStocks().then(_ => {
       this.stocksFetched = true
@@ -90,6 +81,7 @@ export default {
         :disabled="updatingStocks">↻</button>
     </div>
     <div class="text-center mt-4 con-switch">
+      <input class="text-in w-[200px] mt-2 mr-4" type="text" placeholder="Search" v-model="searchString"/>
       <div class="inline-block mb-[-5px]">
         <vs-select v-model="sortField" class="mr-2" :color="primaryColor">
           <vs-select-item :key="item.value" :text="item.text" :modelValue="item.value"
@@ -104,11 +96,11 @@ export default {
       </div>
     </div>
     <div class="body">
-      <div class="flex flex-wrap justify-center" v-if="!updatingStocks">
-        <WatchedStock :stock="stock" v-for="stock in this.sortedStock(this.sortField, this.reverseSort)"/>
+      <div class="flex flex-wrap justify-center" v-if="!updatingStocks && stocksFetched">
+        <WatchedStock :stock="stock" v-for="stock in this.mangleStocks(this.sortField, this.reverseSort, this.searchString)"/>
       </div>
       <div class="flex justify-center p-10 pt-[100px]" v-else>
-        <vs-progress class="min-w-[300px] max-w-[700px]" indeterminate :color="primaryColor">primary</vs-progress>
+        <vs-progress class="min-w-[300px] max-w-[700px]" indeterminate :color="primaryColor"/>
       </div>
     </div>
   </div>
