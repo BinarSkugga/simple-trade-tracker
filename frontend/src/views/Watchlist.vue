@@ -13,12 +13,21 @@ export default {
     const stocksFetched = ref(false)
     const updatingStocks = ref(false)
 
-    const sortField = ref('symbol')
+    let sortField = ref('symbol')
     const reverseSort = ref(false)
+
+    const filterChoices = [
+      {text: 'Symbol', value: 'symbol'},
+      {text: 'Name', value: 'name'},
+      {text: 'Yield', value: 'dividend_yield'},
+      {text: 'Price', value: 'price'},
+      {text: 'Income', value: 'getMonthlyIncome'},
+    ]
 
     return {
       stocksFetched, updatingStocks,
-      sortField, reverseSort
+      sortField, reverseSort, filterChoices,
+      twPrimary: twPrimary
     }
   },
   methods: {
@@ -80,20 +89,26 @@ export default {
       <button v-ripple class="button round ml-2" @click="updateStocksWithLoading()"
         :disabled="updatingStocks">↻</button>
     </div>
-    <div class="text-center mt-3">
-      Sort:
-      <select v-model="sortField" class="mr-2">
-        <option value="name">Name</option>
-        <option value="symbol">Symbol</option>
-        <option value="dividend_yield">Yield</option>
-        <option value="price">Price</option>
-        <option value="getMonthlyIncome">Income</option>
-      </select>
-      Reversed: <input type="checkbox" v-model="reverseSort"/>
+    <div class="text-center mt-4 con-switch">
+      <div class="inline-block mb-[-5px]">
+        <vs-select v-model="sortField" class="mr-2" :color="twPrimary">
+          <vs-select-item :key="item.value" :text="item.text" :modelValue="item.value"
+                          v-for="item in filterChoices"/>
+        </vs-select>
+      </div>
+      <div class="inline-block mb-[-5px]">
+        <vs-switch v-model="reverseSort" :color="twPrimary">
+          <template #off>Ordered</template>
+          <template #on>Reversed</template>
+        </vs-switch>
+      </div>
     </div>
     <div class="body">
       <div class="flex flex-wrap justify-center" v-if="!updatingStocks">
         <WatchedStock :stock="stock" v-for="stock in this.sortedStock(this.sortField, this.reverseSort)"/>
+      </div>
+      <div class="flex justify-center p-10 pt-[100px]" v-else>
+        <vs-progress class="min-w-[300px] max-w-[700px]" indeterminate :color="twPrimary">primary</vs-progress>
       </div>
     </div>
   </div>

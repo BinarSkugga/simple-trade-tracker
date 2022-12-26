@@ -17,7 +17,7 @@ export default {
 </script>
 
 <template>
-  <div class="card m-2 min-w-[300px] max-w-[300px]" type="button" v-ripple="'#1abc9c35'">
+  <div class="card m-2 min-w-[300px] max-w-[300px] select-none" type="button" v-ripple="'#1abc9c35'">
       <div class="flex justify-between">
         <span class="font-bold">{{stock.symbol}}</span>
         <span class="font-bold text-sm">${{stock.price}}</span>

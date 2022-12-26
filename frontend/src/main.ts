@@ -12,10 +12,16 @@ import axios from "axios";
 import Ripple from "./directives/ripple"
 Ripple.color = 'rgba(255, 255, 255, 0.35)';
 
+//@ts-ignore
+import Vuesax from 'vuesax3'
+import 'vuesax3/dist/vuesax.css'
+import 'material-icons/iconfont/material-icons.css';
+
 const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 app.use(VueAxios, axios)
+app.use(Vuesax, {})
 // app.use(VueApexCharts)
 app.directive('ripple', Ripple)
 
