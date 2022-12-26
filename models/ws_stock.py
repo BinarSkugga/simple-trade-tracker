@@ -10,7 +10,6 @@ SQL_SCHEMA = """
         symbol VARCHAR(16),
         currency VARCHAR(16),
         exchange VARCHAR(64),
-        tags TEXT,
 
         price FLOAT,
 
@@ -40,7 +39,6 @@ class WSStock:
     symbol: str
     currency: str
     exchange: str
-    tags: str
 
     price: float
 

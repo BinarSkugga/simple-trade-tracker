@@ -3,15 +3,42 @@
 @tailwind utilities;
 
 .sidebar {
-    @apply fixed top-0 left-0 h-screen w-[150px] border-r border-r-gray-200;
+    @apply h-screen min-w-[150px] border-r border-r-gray-200 ml-[0px] transition-all ease-in-out;
+}
+
+.sidebar.closed {
+    @apply ml-[-150px] transition-all ease-in-out;
+}
+
+.sidebar-toggler {
+    @apply absolute top-[5px] right-[-13px] bg-blue-500 text-white font-bold w-[25px] h-[25px] rounded-full text-center
+        transition-all ease-in-out cursor-pointer rotate-180;
+}
+
+.sidebar.closed .sidebar-toggler {
+    @apply right-[-30px] rotate-0 transition-all ease-in-out;
 }
 
 .body {
-    @apply ml-[150px] p-3;
+    @apply p-3;
 }
 
 .card {
     @apply p-5 border border-gray-300 rounded-md shadow-md;
+}
+
+.side-menu-item {
+    @apply p-2 border-gray-300 border-b-[1px] border-t-[1px] hover:bg-gray-300 cursor-pointer
+        transition ease-in-out block;
+
+}
+
+.side-menu-item + .side-menu-item {
+    @apply border-t-[0px];
+}
+
+.side-menu-item.selected {
+    @apply border-l-[5px] border-l-blue-500;
 }
 
 .stock-tag-gray {

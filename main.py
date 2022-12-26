@@ -97,5 +97,7 @@ def watchlist_set():
     for w_stock in watchlist_stocks:
         stocks.upsert(w_stock)
 
+    return stocks.list()
+
 
 fastapi.mount("/", StaticFiles(directory="frontend/dist", html=True), name="frontend")

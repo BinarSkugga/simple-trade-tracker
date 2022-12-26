@@ -111,7 +111,6 @@ def ws_watchlist(access_token: str, account_id: str) -> List[WSStock]:
         'symbol': stock['stock']['symbol'],
         'currency': stock['currency'],
         'exchange': stock['stock']['primary_exchange'],
-        'tags': ','.join([group['name_en'] for group in stock['groups']]),
 
         'price': float(stock['quote']['amount']),
 
