@@ -74,3 +74,7 @@ body, html {
 .button.round {
     @apply rounded-full p-2 w-9 h-9;
 }
+
+.button:disabled {
+    @apply bg-gray-500;
+}

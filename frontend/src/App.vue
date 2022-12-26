@@ -50,7 +50,7 @@ export default {
         </div>
       </div>
 
-      <RouterView class="h-screen overflow-y-scroll"/>
+      <RouterView class="h-screen overflow-y-scroll grow"/>
     </div>
   </div>
 </template>

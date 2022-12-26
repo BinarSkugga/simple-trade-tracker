@@ -11,12 +11,13 @@ export default {
   components: {Login, WatchedStock},
   data() {
     const stocksFetched = ref(false)
+    const updatingStocks = ref(false)
 
     const sortField = ref('symbol')
     const reverseSort = ref(false)
 
     return {
-      stocksFetched,
+      stocksFetched, updatingStocks,
       sortField, reverseSort
     }
   },
@@ -45,6 +46,12 @@ export default {
         return a[field] - b[field]
       })
     },
+    updateStocksWithLoading() {
+      this.updatingStocks = true
+      this.updateStocks().finally(_ => {
+        this.updatingStocks = false
+      })
+    }
   },
   // computed: {
   //   averageYield() {
@@ -70,7 +77,8 @@ export default {
   <div>
     <div class="text-center mt-4 font-bold text-lg">
       Watchlist
-      <div v-ripple class="button round ml-2" type="button" @click="updateStocks()">↻</div>
+      <button v-ripple class="button round ml-2" @click="updateStocksWithLoading()"
+        :disabled="updatingStocks">↻</button>
     </div>
     <div class="text-center mt-3">
       Sort:
@@ -83,8 +91,10 @@ export default {
       </select>
       Reversed: <input type="checkbox" v-model="reverseSort"/>
     </div>
-    <div class="body flex flex-wrap justify-center">
-      <WatchedStock :stock="stock" v-for="stock in this.sortedStock(this.sortField, this.reverseSort)"/>
+    <div class="body">
+      <div class="flex flex-wrap justify-center" v-if="!updatingStocks">
+        <WatchedStock :stock="stock" v-for="stock in this.sortedStock(this.sortField, this.reverseSort)"/>
+      </div>
     </div>
   </div>
 </template>
