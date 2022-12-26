@@ -17,7 +17,7 @@ export default {
 </script>
 
 <template>
-  <div class="card m-2 min-w-[300px] max-w-[300px]">
+  <div class="card m-2 min-w-[300px] max-w-[300px]" type="button" v-ripple="'#1abc9c35'">
       <div class="flex justify-between">
         <span class="font-bold">{{stock.symbol}}</span>
         <span class="font-bold text-sm">${{stock.price}}</span>
@@ -35,8 +35,8 @@ export default {
       </div>
       <div class="flex justify-between">
         <div>
-          <span :class="[stock.buyable ? 'stock-tag-blue':'stock-tag-red']">Buyable</span>
-          <span :class="[stock.can_use_fractional ? 'stock-tag-blue':'stock-tag-red']">Fractional</span>
+          <span :class="[stock.buyable ? 'stock-tag-primary':'stock-tag-red']">Buyable</span>
+          <span :class="[stock.can_use_fractional ? 'stock-tag-primary':'stock-tag-red']">Fractional</span>
         </div>
         <div>
           <span class="stock-tag-gray">{{stock.exchange}}</span>

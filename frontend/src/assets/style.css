@@ -49,8 +49,8 @@ body, html {
     @apply text-[10px] bg-gray-200 text-gray-800 px-1.5 py-0.5 rounded-full m-0.5;
 }
 
-.stock-tag-blue {
-    @apply text-[10px] bg-blue-200 text-blue-800 px-1.5 py-0.5 rounded-full m-0.5
+.stock-tag-primary {
+    @apply text-[10px] bg-primary-lighter text-primary-darker px-1.5 py-0.5 rounded-full m-0.5
 }
 
 .stock-tag-red {
