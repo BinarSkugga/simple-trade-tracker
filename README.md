@@ -13,7 +13,7 @@ Personnal Portfolio Tracker
 - [ ] Generate over time value changes and dividend changes graphs
 - [ ] Diversification pie chart
 - [ ] Position weight pie chart
-- [ ] Add usefull computed metrics:
+- [ ] Add useful computed metrics:
   - [ ] P/E Ratio
   - [ ] Earning/Profitability growth
   - [ ] Debt to equity ratio
