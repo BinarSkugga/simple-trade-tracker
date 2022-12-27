@@ -24,9 +24,15 @@ export default {
         this.updatingPositions = false
       })
     },
-
     getStockFromWSID(ws_id) {
       return this.getStocks().find(e => e.ws_id === ws_id)
+    },
+    getTotalMonthlyIncome() {
+      return this.getPositions().reduce((a, position) => {
+        const stock = this.getStockFromWSID(position.ws_id)
+        const monthly_inc = (position.quantity * stock.dividend_yield * stock.price / 12)
+        return a + monthly_inc
+      }, 0).toFixed(2)
     }
   },
   mounted() {
@@ -39,6 +45,17 @@ export default {
 
 <template>
   <div>
+    <div class="text-center mt-4 font-bold text-lg">
+      Overview
+    </div>
+    <div class="flex justify-around mt-2">
+      <span class="text-center" v-if="positionsFetched">
+        ${{ getTotalMonthlyIncome() }} <br/>Total Monthly Income
+      </span>
+    </div>
+
+    <div class="separator my-5"></div>
+
     <div class="text-center mt-4 font-bold text-lg">
       Positions
       <button v-ripple class="button round ml-2" @click="updatePositionsWithLoading()"

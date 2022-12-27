@@ -5,15 +5,15 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 from starlette.staticfiles import StaticFiles
 
-from auth_utils import hash_password, verify_password, new_token, auth
-from database_utils import execute, drop_database, create_database
-from models import ws_stock, user, ws_position
-from models.ws_position import WSPosition
-from models.ws_stock import WSStock
-from models.user import User
-from payloads.login import Login
-from repository import Repository
-from wealthsimple_utils import WealthSimpleAPI
+from backend.auth_utils import hash_password, verify_password, new_token, auth
+from backend.database_utils import execute, drop_database, create_database
+from backend.models import user, ws_stock, ws_position
+from backend.models.ws_position import WSPosition
+from backend.models.ws_stock import WSStock
+from backend.models.user import User
+from backend.payloads.login import Login
+from backend.repository import Repository
+from backend.wealthsimple_utils import WealthSimpleAPI
 
 if not os.path.exists('frontend/dist'):
     os.mkdir('frontend/dist')
