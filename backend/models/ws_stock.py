@@ -15,7 +15,7 @@ SQL_SCHEMA = """
 
         can_use_fractional BOOLEAN,
         buyable BOOLEAN,
-        
+
         eps FLOAT,
         pe FLOAT,
         beta FLOAT,

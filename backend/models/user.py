@@ -6,7 +6,7 @@ SQL_SCHEMA = """
         username VARCHAR(256),
         password_hash VARCHAR(512),
         role VARCHAR(32),
-        
+
         PRIMARY KEY (id)
     );
 """

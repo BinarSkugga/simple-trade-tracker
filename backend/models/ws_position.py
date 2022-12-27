@@ -4,7 +4,7 @@ SQL_SCHEMA = """
     CREATE TABLE IF NOT EXISTS "position" (
         id BIGSERIAL,
         ws_id VARCHAR(256),
-        
+
         quantity FLOAT,
         sellable_quantity FLOAT,
         book_value FLOAT,

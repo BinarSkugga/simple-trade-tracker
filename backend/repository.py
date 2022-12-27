@@ -68,7 +68,7 @@ class Repository:
     def find(self, column: str, value: Any):
         if isinstance(value, list):
             sql_value = SQL('WHERE {column} IN ({value})').format(column=Identifier(column),
-                                                      value=SQL(',').join([Literal(v) for v in value]))
+                                                                  value=SQL(',').join([Literal(v) for v in value]))
         else:
             sql_value = SQL('WHERE {column}={value}').format(column=Identifier(column), value=Literal(value))
 

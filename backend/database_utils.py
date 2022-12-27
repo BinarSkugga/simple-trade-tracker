@@ -35,7 +35,7 @@ def execute_gen(query: Union[Composed, str], connection_uri: str = POSTGRES_URI,
                     yield record
 
                 connection.commit()
-            except DatabaseError as _:
+            except DatabaseError:
                 traceback.print_exc()
 
 
