@@ -9,13 +9,20 @@ export default {
   },
   methods: {
     getYield(stock) {
-      return (stock.dividend_yield * 100).toFixed(2)
+      return (stock.div_yield * 100).toFixed(2)
     },
-    getMonthlyIncome(stock) {
-      return (stock.dividend_yield * stock.price / 12).toFixed(2)
+    getIncome(stock) {
+      const distributionDivision = stock.div_distribution === 'Monthly' ? 12 : 4
+      return (stock.div_yield * stock.price / distributionDivision).toFixed(2)
     },
-    getQuarterlyIncome(stock) {
-      return (stock.dividend_yield * stock.price / 4).toFixed(2)
+    getExDividendDate(stock) {
+      if(stock.div_ex_date == null)
+        return null
+
+      return new Date(stock.div_ex_date * 1000).toLocaleDateString()
+    },
+    isExDataPassed(stock) {
+      return Date.now() / 1000 >= stock.div_ex_date
     }
   }
 }
@@ -32,16 +39,12 @@ export default {
           {{getYield(stock)}}% <br/>Yield
         </span>
         <span class="text-center">
-          ${{getMonthlyIncome(stock)}} <br/>Monthly
-        </span>
-        <span class="text-center">
-          ${{getQuarterlyIncome(stock)}} <br/>Quarterly
+          ${{getIncome(stock)}} <br/>{{stock.div_distribution}}
         </span>
       </div>
       <div class="flex justify-between">
         <div>
-          <span :class="[stock.buyable ? 'stock-tag-green':'stock-tag-red']">Buyable</span>
-          <span :class="[stock.can_use_fractional ? 'stock-tag-green':'stock-tag-red']">Fractional</span>
+          <span :class="[isExDataPassed(stock) ? 'stock-tag-red':'stock-tag-green']">Ex: {{getExDividendDate(stock)}}</span>
         </div>
         <div>
           <span class="stock-tag-gray">{{stock.exchange}}</span>

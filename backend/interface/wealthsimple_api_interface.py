@@ -3,7 +3,7 @@ from typing import List
 
 from models.ws_account import WSAccount
 from models.ws_position import WSPosition
-from models.ws_stock import WSStock
+from models.stock import Stock
 from models.ws_token_set import WSTokenSet
 from models.ws_user import WSUser
 
@@ -34,5 +34,5 @@ class IWealthSimpleAPI(ABC):
         pass
 
     @abstractmethod
-    def watchlist(self) -> List[WSStock]:
+    def watchlist(self) -> List[Stock]:
         pass

@@ -30,7 +30,18 @@ export default {
     getTotalMonthlyIncome() {
       return this.getPositions().reduce((a, position) => {
         const stock = this.getStockFromWSID(position.ws_id)
-        const monthly_inc = (position.quantity * stock.dividend_yield * stock.price / 12)
+        if(stock.div_distribution !== 'Monthly') return a
+
+        const monthly_inc = (position.quantity * stock.div_yield * stock.price / 12)
+        return a + monthly_inc
+      }, 0).toFixed(2)
+    },
+    getTotalQuarterlyIncome() {
+      return this.getPositions().reduce((a, position) => {
+        const stock = this.getStockFromWSID(position.ws_id)
+        if(stock.div_distribution !== 'Quarterly') return a
+
+        const monthly_inc = (position.quantity * stock.div_yield * stock.price / 12)
         return a + monthly_inc
       }, 0).toFixed(2)
     }
@@ -51,6 +62,9 @@ export default {
     <div class="flex justify-around mt-2">
       <span class="text-center" v-if="positionsFetched">
         ${{ getTotalMonthlyIncome() }} <br/>Total Monthly Income
+      </span>
+      <span class="text-center" v-if="positionsFetched">
+        ${{ getTotalQuarterlyIncome() }} <br/>Total Quarterly Income
       </span>
     </div>
 

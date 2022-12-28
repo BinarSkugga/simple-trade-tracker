@@ -1,7 +1,7 @@
 import pytest
 
 from database_utils import execute, drop_database, create_database
-from models import user, ws_stock, ws_position
+from models import user, stock, ws_position
 from repository import Repository
 from tests.mocked_wealthsimple_api import MockedWealthSimpleAPI
 
@@ -28,7 +28,7 @@ def user_repository():
 
 @pytest.fixture
 def stock_repository():
-    return Repository('stock', ws_stock.WSStock)
+    return Repository('stock', ws_stock.Stock)
 
 
 @pytest.fixture
