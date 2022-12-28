@@ -1,10 +1,10 @@
 from fastapi import FastAPI, HTTPException
 from starlette.requests import Request
 
-from auth_utils import verify_password, new_token, auth
-from models.user import User
-from payloads.login import Login
-from repository import Repository
+from backend.auth_utils import verify_password, new_token, auth
+from backend.models.user import User
+from backend.payloads.login import Login
+from backend.repository import Repository
 
 
 def load(fastapi: FastAPI):

@@ -3,7 +3,7 @@ from typing import Union, Any, Callable
 
 from psycopg.sql import SQL, Identifier, Literal, Composed
 
-from database_utils import execute, execute_gen, generate_id
+from backend.database_utils import execute, execute_gen, generate_id
 
 SQL_LIST = 'SELECT * FROM {table}'
 SQL_FIND = 'SELECT * FROM {table} {filters}'

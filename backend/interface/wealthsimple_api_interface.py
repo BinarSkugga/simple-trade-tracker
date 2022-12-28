@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from models.ws_account import WSAccount
-from models.ws_position import WSPosition
-from models.stock import Stock
-from models.ws_token_set import WSTokenSet
-from models.ws_user import WSUser
+from backend.models.ws_account import WSAccount
+from backend.models.ws_position import WSPosition
+from backend.models.stock import Stock
+from backend.models.ws_token_set import WSTokenSet
+from backend.models.ws_user import WSUser
 
 
 class FailedWSLogin(BaseException):

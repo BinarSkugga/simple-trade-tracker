@@ -5,15 +5,15 @@ from typing import List
 import requests
 from pyotp import TOTP
 
-from config import WS_HOST
-from seeking_alpha_api import get_stock_symbol, get_stocks_info
-from interface.wealthsimple_api_interface import IWealthSimpleAPI
-from models.ws_account import WSAccount
-from models.ws_position import WSPosition
-from models.stock import Stock
-from models.ws_token_set import WSTokenSet
-from models.ws_user import WSUser
-from utils import iso_to_epoch
+from backend.config import WS_HOST
+from backend.seeking_alpha_api import get_stock_symbol, get_stocks_info
+from backend.interface.wealthsimple_api_interface import IWealthSimpleAPI
+from backend.models.ws_account import WSAccount
+from backend.models.ws_position import WSPosition
+from backend.models.stock import Stock
+from backend.models.ws_token_set import WSTokenSet
+from backend.models.ws_user import WSUser
+from backend.utils import iso_to_epoch
 
 
 def ws_login(username: str, password: str, otp: str) -> WSTokenSet:

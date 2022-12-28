@@ -1,9 +1,9 @@
 import pytest
 
-from database_utils import execute, drop_database, create_database
-from models import user, ws_position, stock
-from repository import Repository
-from tests.mocked_wealthsimple_api import MockedWealthSimpleAPI
+from backend.database_utils import execute, drop_database, create_database
+from backend.models import user, ws_position, stock
+from backend.repository import Repository
+from backend.tests.mocked_wealthsimple_api import MockedWealthSimpleAPI
 
 
 @pytest.fixture(autouse=True)

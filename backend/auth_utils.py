@@ -6,8 +6,8 @@ from fastapi import Depends, HTTPException
 from passlib.hash import argon2
 from starlette.requests import Request
 
-from models.user import User
-from repository import Repository
+from backend.models.user import User
+from backend.repository import Repository
 
 TOKEN_SECRET = os.environ.get('TOKEN_SECRET', 'blablablablopblopblop')
 

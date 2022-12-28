@@ -2,8 +2,8 @@ from typing import List
 
 import requests
 
-from config import SEEKING_ALPHA_HOST, SEEKING_ALPHA_API_KEY
-from utils import chunks
+from backend.config import SEEKING_ALPHA_HOST, SEEKING_ALPHA_API_KEY
+from backend.utils import chunks
 
 headers = {
     "Content-Type": "application/json",

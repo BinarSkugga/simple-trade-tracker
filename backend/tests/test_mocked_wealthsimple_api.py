@@ -2,10 +2,10 @@ import time
 
 import pytest
 
-from interface.wealthsimple_api_interface import FailedWSLogin
-from models.ws_position import WSPosition
-from models.stock import Stock
-from models.ws_token_set import WSTokenSet
+from backend.interface.wealthsimple_api_interface import FailedWSLogin
+from backend.models.ws_position import WSPosition
+from backend.models.stock import Stock
+from backend.models.ws_token_set import WSTokenSet
 
 
 def test_login_success(mocked_ws_api):
