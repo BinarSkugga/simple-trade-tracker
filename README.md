@@ -23,6 +23,7 @@ Personnal Portfolio Tracker
  - [ ] Project the portfolio into the future
 
 ## UI Examples
-![image](https://user-images.githubusercontent.com/7575628/209530574-c5936f13-9fe2-4d42-8af5-9384acc7a629.png)
-![image](https://user-images.githubusercontent.com/7575628/209530680-26199c1c-ed22-4c5e-b1e3-805e807f4b30.png)
-![image](https://user-images.githubusercontent.com/7575628/209531539-760c2c3e-cc7e-4b7a-bf64-e7a475184157.png)
+![image](https://user-images.githubusercontent.com/7575628/209782086-7efb247d-f3ae-4081-add8-41214d13eeef.png)
+![image](https://user-images.githubusercontent.com/7575628/209782116-30c491cc-92da-43ea-a58a-707f38103902.png)
+![image](https://user-images.githubusercontent.com/7575628/209782177-2500d651-55c7-4008-b6db-3cf54d1ecbbe.png)
+![image](https://user-images.githubusercontent.com/7575628/209782141-df4f61e5-a171-4944-88e6-6cd6d93ff210.png)
