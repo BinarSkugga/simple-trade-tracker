@@ -11,7 +11,7 @@ export default {
     },
     getIncome(position, stock) {
       const distributionDivision = stock.div_distribution === 'Monthly' ? 12 : 4
-      return (position.quantity * stock.div_yield * stock.price / distributionDivision).toFixed(2)
+      return (position.quantity * (stock.div_yield * stock.price) / distributionDivision).toFixed(2)
     },
     getCapitalGain(position) {
       return (position.market_value - position.book_value).toFixed(2)

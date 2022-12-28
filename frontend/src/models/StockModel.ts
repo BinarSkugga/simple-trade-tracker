@@ -11,6 +11,7 @@ export class StockModel {
 
     can_use_fractional: boolean
     buyable: boolean
+    limited: boolean
 
     eps: number
     pe: number
@@ -22,7 +23,7 @@ export class StockModel {
 
 
     constructor(id: number, ws_id: string, name: string, type: string, symbol: string, currency: string,
-                exchange: string, price: number, can_use_fractional: boolean, buyable: boolean,
+                exchange: string, price: number, can_use_fractional: boolean, buyable: boolean, limited: boolean,
                 eps: number, pe: number, high52: number, low52: number, div_ex_date: number,
                 div_yield: number, div_distribution: string) {
         this.id = id;
@@ -35,6 +36,7 @@ export class StockModel {
         this.price = price;
         this.can_use_fractional = can_use_fractional;
         this.buyable = buyable;
+        this.limited = limited;
         this.eps = eps;
         this.pe = pe;
         this.high52 = high52;

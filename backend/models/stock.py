@@ -16,6 +16,7 @@ SQL_SCHEMA = """
 
         can_use_fractional BOOLEAN,
         buyable BOOLEAN,
+        limited BOOLEAN,
 
         eps FLOAT,
         pe FLOAT,
@@ -47,6 +48,7 @@ class Stock:
 
     can_use_fractional: bool
     buyable: bool
+    limited: bool = False
 
     eps: float = None
     pe: float = None

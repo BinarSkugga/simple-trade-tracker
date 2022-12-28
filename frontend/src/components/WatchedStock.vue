@@ -13,7 +13,7 @@ export default {
     },
     getIncome(stock) {
       const distributionDivision = stock.div_distribution === 'Monthly' ? 12 : 4
-      return (stock.div_yield * stock.price / distributionDivision).toFixed(2)
+      return (stock.div_yield * stock.price / distributionDivision).toFixed(3)
     },
     getExDividendDate(stock) {
       if(stock.div_ex_date == null)
@@ -29,7 +29,7 @@ export default {
 </script>
 
 <template>
-  <div class="card m-2 min-w-[300px] max-w-[300px] select-none" type="button" v-ripple="primaryColor + '35'">
+  <div class="card m-2 min-w-[300px] max-w-[300px] select-none flex-row" type="button" v-ripple="primaryColor + '35'">
       <div class="flex justify-between">
         <span class="font-bold">{{stock.symbol}}</span>
         <span class="font-bold text-sm">${{stock.price}}</span>
@@ -39,13 +39,17 @@ export default {
           {{getYield(stock)}}% <br/>Yield
         </span>
         <span class="text-center">
-          ${{getIncome(stock)}} <br/>{{stock.div_distribution}}
+          ${{getIncome(stock)}} <br/>{{stock.limited ? 'Monthly' : stock.div_distribution}}
         </span>
       </div>
       <div class="flex justify-between">
-        <div>
+        <div v-if="!stock.limited">
           <span :class="[isExDataPassed(stock) ? 'stock-tag-red':'stock-tag-green']">Ex: {{getExDividendDate(stock)}}</span>
         </div>
+        <div v-else>
+          <span class="stock-tag-gray">Limited</span>
+        </div>
+
         <div>
           <span class="stock-tag-gray">{{stock.exchange}}</span>
           <span class="stock-tag-gray">{{stock.currency}}</span>

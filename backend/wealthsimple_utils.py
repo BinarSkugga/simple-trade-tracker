@@ -112,7 +112,11 @@ def ws_watchlist(access_token: str, account_id: str) -> List[Stock]:
     additional_info = get_stocks_info(sa_symbols)
     for stock in simple_stocks:
         details = next(iter(detail for detail in additional_info if detail['id'] == stock.sa_symbol), None)['attributes']
+        if details['companyName'] is None:
+            stock.limited = True
+            continue
 
+        stock.limited = False
         stock.eps = details['estimateEps']
         stock.pe = details['peRatioFwd']
         stock.high52 = details['high52']
