@@ -52,6 +52,8 @@ stocks.truncate()
 for w_stock in watchlist_stocks:
     stocks.upsert(w_stock)
 
+print(watchlist_stocks)
+
 # Init Positions
 ws_positions = ws.positions()
 positions.truncate()
