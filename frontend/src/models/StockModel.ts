@@ -14,17 +14,17 @@ export class StockModel {
 
     eps: number
     pe: number
-    beta: number
     high52: number
     low52: number
-    ex_dividend_date: number
-    dividend_yield: number
+    div_ex_date: number
+    div_yield: number
+    div_distribution: string
 
 
     constructor(id: number, ws_id: string, name: string, type: string, symbol: string, currency: string,
                 exchange: string, price: number, can_use_fractional: boolean, buyable: boolean,
-                eps: number, pe: number, beta: number, high52: number, low52: number, ex_dividend_date: number,
-                dividend_yield: number) {
+                eps: number, pe: number, high52: number, low52: number, div_ex_date: number,
+                div_yield: number, div_distribution: string) {
         this.id = id;
         this.ws_id = ws_id;
         this.name = name;
@@ -37,10 +37,10 @@ export class StockModel {
         this.buyable = buyable;
         this.eps = eps;
         this.pe = pe;
-        this.beta = beta;
         this.high52 = high52;
         this.low52 = low52;
-        this.ex_dividend_date = ex_dividend_date;
-        this.dividend_yield = dividend_yield;
+        this.div_ex_date = div_ex_date;
+        this.div_yield = div_yield;
+        this.div_distribution = div_distribution
     }
 }

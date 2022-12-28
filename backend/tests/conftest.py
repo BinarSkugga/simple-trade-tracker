@@ -1,7 +1,7 @@
 import pytest
 
 from database_utils import execute, drop_database, create_database
-from models import user, ws_stock, ws_position
+from models import user, ws_position, stock
 from repository import Repository
 from tests.mocked_wealthsimple_api import MockedWealthSimpleAPI
 
@@ -12,7 +12,7 @@ def initialize_schema():
     create_database('trade_tracker_test')
 
     execute(user.SQL_SCHEMA, fetch=False)
-    execute(ws_stock.SQL_SCHEMA, fetch=False)
+    execute(stock.SQL_SCHEMA, fetch=False)
     execute(ws_position.SQL_SCHEMA, fetch=False)
 
 
@@ -28,7 +28,7 @@ def user_repository():
 
 @pytest.fixture
 def stock_repository():
-    return Repository('stock', ws_stock.WSStock)
+    return Repository('stock', stock.Stock)
 
 
 @pytest.fixture

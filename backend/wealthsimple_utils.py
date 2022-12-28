@@ -5,14 +5,15 @@ from typing import List
 import requests
 from pyotp import TOTP
 
+from config import WS_HOST
+from seeking_alpha_api import get_stock_symbol, get_stocks_info
+from interface.wealthsimple_api_interface import IWealthSimpleAPI
 from models.ws_account import WSAccount
 from models.ws_position import WSPosition
-from models.ws_stock import WSStock
+from models.stock import Stock
 from models.ws_token_set import WSTokenSet
 from models.ws_user import WSUser
 from utils import iso_to_epoch
-
-WS_HOST = 'https://trade-service.wealthsimple.com'
 
 
 def ws_login(username: str, password: str, otp: str) -> WSTokenSet:
@@ -86,17 +87,18 @@ def ws_positions(access_token: str, account_id: str) -> List[WSPosition]:
     }) for position in body['results']]
 
 
-def ws_watchlist(access_token: str, account_id: str) -> List[WSStock]:
+def ws_watchlist(access_token: str, account_id: str) -> List[Stock]:
     response = requests.get(f'{WS_HOST}/watchlist', params={'account_id': account_id},
                             headers={'Authorization': access_token})
     body = response.json()
-    simple_stocks = [WSStock(**{
+    simple_stocks = [Stock(**{
         'id': None,
         'ws_id': stock['id'],
         'name': stock['stock']['name'],
 
         'type': stock['security_type'],
         'symbol': stock['stock']['symbol'],
+        'sa_symbol': get_stock_symbol(stock['stock']['symbol'], stock['stock']['primary_exchange']),
         'currency': stock['currency'],
         'exchange': stock['stock']['primary_exchange'],
 
@@ -106,17 +108,18 @@ def ws_watchlist(access_token: str, account_id: str) -> List[WSStock]:
         'buyable': stock['buyable']
     }) for stock in body['securities']]
 
+    sa_symbols = [stock.sa_symbol for stock in simple_stocks]
+    additional_info = get_stocks_info(sa_symbols)
     for stock in simple_stocks:
-        response = requests.get(f'{WS_HOST}/securities/{stock.ws_id}',
-                                headers={'Authorization': access_token})
-        body = response.json()
-        stock.eps = body['fundamentals']['eps']
-        stock.pe = body['fundamentals']['pe_ratio']
-        stock.beta = body['fundamentals']['beta']
-        stock.high52 = body['fundamentals']['high_52_week']
-        stock.low52 = body['fundamentals']['low_52_week']
-        stock.ex_dividend_date = iso_to_epoch(body['fundamentals']['ex_div_date'])
-        stock.dividend_yield = body['fundamentals']['yield']
+        details = next(iter(detail for detail in additional_info if detail['id'] == stock.sa_symbol), None)['attributes']
+
+        stock.eps = details['estimateEps']
+        stock.pe = details['peRatioFwd']
+        stock.high52 = details['high52']
+        stock.low52 = details['low52']
+        stock.div_ex_date = iso_to_epoch(details['dividends'][0]['exDate'])
+        stock.div_yield = details['divYield'] / 100
+        stock.div_distribution = details['divDistribution']
 
     return simple_stocks
 
@@ -127,7 +130,7 @@ def ws_security_info(access_token: str, security_id: str) -> dict:
     return body
 
 
-class WealthSimpleAPI:
+class WealthSimpleAPI(IWealthSimpleAPI):
     def __init__(self, email: str, password: str, otp_secret: str):
         self.email = email
         self.totp = TOTP(otp_secret)
@@ -137,47 +140,54 @@ class WealthSimpleAPI:
         self.account = None
 
         if not os.path.exists('refresh.txt'):
-            self.key_ring = ws_login(email, password, self.totp.now())
-            with open('refresh.txt', 'w') as f:
-                f.write(self.key_ring.refresh)
+            self.login(email, password, self.totp.now())
         else:
             with open('refresh.txt', 'r') as f:
                 self.key_ring = WSTokenSet(access='', refresh=f.readline(), expire=0)
-            self.auto_refresh()
+            self.refresh(self.key_ring.refresh)
 
     def set_account(self, account_id: str):
         self.account_id = account_id
         self.account = next((account for account in self.accounts() if account.id == account_id), None)
         print(f'Account selected: {self.account.id}')
 
-    def refresh(self):
-        key_ring = ws_refresh(self.key_ring.refresh)
+    def login(self, username: str, password: str, otp: str) -> WSTokenSet:
+        self.key_ring = ws_login(username, password, self.totp.now())
+        with open('refresh.txt', 'w') as f:
+            f.write(self.key_ring.refresh)
 
-        if key_ring is None:
-            self.key_ring = ws_login(self.email, self.password, self.totp.now())
-        else:
-            self.key_ring = ws_refresh(self.key_ring.refresh)
+        return self.key_ring
 
-    def auto_refresh(self):
+    def refresh(self, refresh_token: str) -> WSTokenSet:
         if self.key_ring.expire <= time.time():
-            self.refresh()
+            key_ring = ws_refresh(refresh_token)
+
+            if key_ring is None:
+                self.key_ring = ws_login(self.email, self.password, self.totp.now())
+            else:
+                self.key_ring = ws_refresh(self.key_ring.refresh)
+
+            with open('refresh.txt', 'w') as f:
+                f.write(self.key_ring.refresh)
+
+        return self.key_ring
 
     def me(self) -> WSUser:
-        self.auto_refresh()
+        self.refresh(self.key_ring.refresh)
         return ws_me(self.key_ring.access)
 
     def accounts(self):
-        self.auto_refresh()
+        self.refresh(self.key_ring.refresh)
         return ws_accounts(self.key_ring.access)
 
     def positions(self):
-        self.auto_refresh()
+        self.refresh(self.key_ring.refresh)
         return ws_positions(self.key_ring.access, self.account.id)
 
     def watchlist(self):
-        self.auto_refresh()
+        self.refresh(self.key_ring.refresh)
         return ws_watchlist(self.key_ring.access, self.account.id)
 
     def security_info(self, security_id: str):
-        self.auto_refresh()
+        self.refresh(self.key_ring.refresh)
         return ws_security_info(self.key_ring.access, security_id)

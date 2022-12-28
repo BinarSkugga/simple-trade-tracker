@@ -4,7 +4,7 @@ import pytest
 
 from interface.wealthsimple_api_interface import FailedWSLogin
 from models.ws_position import WSPosition
-from models.ws_stock import WSStock
+from models.stock import Stock
 from models.ws_token_set import WSTokenSet
 
 
@@ -58,7 +58,7 @@ def test_watchlist_success(mocked_ws_api):
 
     assert isinstance(stocks, list)
     assert len(stocks) == 10
-    assert all([isinstance(s, WSStock) for s in stocks])
+    assert all([isinstance(s, Stock) for s in stocks])
 
 
 def test_watchlist_not_logged(mocked_ws_api):

@@ -8,6 +8,7 @@ SQL_SCHEMA = """
 
         type VARCHAR(32),
         symbol VARCHAR(16),
+        sa_symbol VARCHAR(16),
         currency VARCHAR(16),
         exchange VARCHAR(64),
 
@@ -18,11 +19,12 @@ SQL_SCHEMA = """
 
         eps FLOAT,
         pe FLOAT,
-        beta FLOAT,
         high52 FLOAT,
         low52 FLOAT,
-        ex_dividend_date BIGINT,
-        dividend_yield FLOAT,
+
+        div_ex_date BIGINT,
+        div_yield FLOAT,
+        div_distribution VARCHAR(24),
 
         PRIMARY KEY (id)
     );
@@ -30,13 +32,14 @@ SQL_SCHEMA = """
 
 
 @dataclasses.dataclass
-class WSStock:
+class Stock:
     id: int
     ws_id: str
     name: str
 
     type: str
     symbol: str
+    sa_symbol: str
     currency: str
     exchange: str
 
@@ -47,8 +50,9 @@ class WSStock:
 
     eps: float = None
     pe: float = None
-    beta: float = None
     high52: float = None
     low52: float = None
-    ex_dividend_date: int = None
-    dividend_yield: float = None
+
+    div_ex_date: int = None
+    div_yield: float = None
+    div_distribution: str = None
