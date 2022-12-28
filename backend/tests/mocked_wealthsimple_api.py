@@ -28,8 +28,7 @@ class MockedWealthSimpleAPI(IWealthSimpleAPI):
             Stock(id=6089422563498829543, ws_id='sec-s-cac48e23f5b84b4787b97628581ce59f', name='Bank of Nova Scotia', type='equity', symbol='BNS', sa_symbol='BNS:CA', currency='CAD', exchange='TSX', price=66.38, can_use_fractional=True, buyable=True, eps=8.32913, pe=7.96961987626559, high52=95.0, low52=63.19, div_ex_date=1672704000, div_yield=0.0621, div_distribution='Quarterly'),
             Stock(id=7952306825162794134, ws_id='sec-s-d4047f55ea8f46f698439b7b6c3e07d0', name='Barrick Gold Corp.', type='equity', symbol='ABX', sa_symbol='ABX:CA', currency='CAD', exchange='TSX', price=23.61, can_use_fractional=True, buyable=True, eps=1.106163312, pe=21.3440454441686, high52=33.016442, low52=17.822047, div_ex_date=1669680000, div_yield=0.0359, div_distribution='Quarterly'),
             Stock(id=5145473064763072867, ws_id='sec-s-e84cc1efee3447a5b9f21e6f47cc6799', name='BMO Canadian High Dividend Covered Call ETF', type='exchange_traded_fund', symbol='ZWC', sa_symbol='ZWC:CA', currency='CAD', exchange='TSX', price=17.26, can_use_fractional=True, buyable=True, eps=None, pe=None, high52=20.4, low52=16.2, div_ex_date=1672185600, div_yield=0.0691, div_distribution='Monthly')
-        ]
-,
+        ],
 
         'positions': [
             WSPosition(id=5802196904218698598, ws_id='sec-s-d4047f55ea8f46f698439b7b6c3e07d0', quantity=6.918, sellable_quantity=6.918, book_value=153.27, market_value=163.33398),
