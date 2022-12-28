@@ -6,7 +6,7 @@ Personnal Portfolio Tracker
 - [X] Filtering and searching your watchlist
 - [X] Manually update your watchlist
 - [X] Viewing your current positions
-- [ ] Filter and search your positions
+- [X] Filter and search your positions
 - [ ] View details on a specific stock
 - [ ] Get key stats for dividend oriented investing on your positions
 - [ ] Allow persistent ammending changes to a stock information to complement the WS api
