@@ -26,4 +26,6 @@ Personnal Portfolio Tracker
 ![image](https://user-images.githubusercontent.com/7575628/209782086-7efb247d-f3ae-4081-add8-41214d13eeef.png)
 ![image](https://user-images.githubusercontent.com/7575628/209782116-30c491cc-92da-43ea-a58a-707f38103902.png)
 ![image](https://user-images.githubusercontent.com/7575628/209782177-2500d651-55c7-4008-b6db-3cf54d1ecbbe.png)
-![image](https://user-images.githubusercontent.com/7575628/209782141-df4f61e5-a171-4944-88e6-6cd6d93ff210.png)
+![image](https://user-images.githubusercontent.com/7575628/209789421-b13c62cd-c473-4407-a814-9093d082d708.png)
+![image](https://user-images.githubusercontent.com/7575628/209789488-bdaaa45d-abe6-48b6-9fec-08c30464645d.png)
+
