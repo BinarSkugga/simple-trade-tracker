@@ -21,7 +21,7 @@ SQL_SCHEMA = """
         pe FLOAT,
         high52 FLOAT,
         low52 FLOAT,
-        
+
         div_ex_date BIGINT,
         div_yield FLOAT,
         div_distribution VARCHAR(24),
