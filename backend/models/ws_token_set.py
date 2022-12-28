@@ -2,7 +2,7 @@ import dataclasses
 
 
 @dataclasses.dataclass
-class WSTokenKeyring:
+class WSTokenSet:
     access: str
     refresh: str
     expire: int

@@ -3,6 +3,7 @@ import pytest
 from database_utils import execute, drop_database, create_database
 from models import user, ws_stock, ws_position
 from repository import Repository
+from tests.mocked_wealthsimple_api import MockedWealthSimpleAPI
 
 
 @pytest.fixture(autouse=True)
@@ -13,6 +14,11 @@ def initialize_schema():
     execute(user.SQL_SCHEMA, fetch=False)
     execute(ws_stock.SQL_SCHEMA, fetch=False)
     execute(ws_position.SQL_SCHEMA, fetch=False)
+
+
+@pytest.fixture
+def mocked_ws_api():
+    return MockedWealthSimpleAPI()
 
 
 @pytest.fixture

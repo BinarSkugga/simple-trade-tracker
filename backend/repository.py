@@ -83,10 +83,7 @@ class Repository:
     def upsert(self, entity):
         if entity.id is None or entity.id == 0:
             entity.id = generate_id()
-
         data = self.model_dumper(self.model_class, entity)
-        if entity.id == 0:
-            entity.id = 'DEFAULT'
 
         execute(SQL(SQL_UPSERT).format(
             table=Identifier(self.table_name),

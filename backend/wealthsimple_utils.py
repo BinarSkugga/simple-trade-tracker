@@ -1,6 +1,5 @@
 import os
 import time
-from datetime import datetime
 from typing import List
 
 import requests
@@ -9,20 +8,14 @@ from pyotp import TOTP
 from models.ws_account import WSAccount
 from models.ws_position import WSPosition
 from models.ws_stock import WSStock
-from models.ws_token_keyring import WSTokenKeyring
+from models.ws_token_set import WSTokenSet
 from models.ws_user import WSUser
+from utils import iso_to_epoch
 
 WS_HOST = 'https://trade-service.wealthsimple.com'
 
 
-def iso_to_epoch(iso: str) -> int:
-    if iso is None:
-        return None
-    utc_time = datetime.strptime(iso, "%Y-%m-%dT%H:%M:%SZ")
-    return int((utc_time - datetime(1970, 1, 1)).total_seconds())
-
-
-def ws_login(username: str, password: str, otp: str) -> WSTokenKeyring:
+def ws_login(username: str, password: str, otp: str) -> WSTokenSet:
     response = requests.post(f'{WS_HOST}/auth/login', json={
         'email': username,
         'password': password,
@@ -32,14 +25,14 @@ def ws_login(username: str, password: str, otp: str) -> WSTokenKeyring:
     if response.status_code != 200:
         raise ValueError(response.json())
 
-    return WSTokenKeyring(**{
+    return WSTokenSet(**{
         'access': response.headers.get('X-Access-Token'),
         'refresh': response.headers.get('X-Refresh-Token'),
         'expire': int(response.headers.get('X-Access-Token-Expires'))
     })
 
 
-def ws_refresh(refresh_token: str) -> WSTokenKeyring:
+def ws_refresh(refresh_token: str) -> WSTokenSet:
     response = requests.post(f'{WS_HOST}/auth/refresh', json={
         'refresh_token': refresh_token
     })
@@ -48,7 +41,7 @@ def ws_refresh(refresh_token: str) -> WSTokenKeyring:
         os.remove('refresh.txt')
         return None
 
-    return WSTokenKeyring(**{
+    return WSTokenSet(**{
         'access': response.headers.get('X-Access-Token'),
         'refresh': response.headers.get('X-Refresh-Token'),
         'expire': int(response.headers.get('X-Access-Token-Expires'))
@@ -149,7 +142,7 @@ class WealthSimpleAPI:
                 f.write(self.key_ring.refresh)
         else:
             with open('refresh.txt', 'r') as f:
-                self.key_ring = WSTokenKeyring(access='', refresh=f.readline(), expire=0)
+                self.key_ring = WSTokenSet(access='', refresh=f.readline(), expire=0)
             self.auto_refresh()
 
     def set_account(self, account_id: str):
