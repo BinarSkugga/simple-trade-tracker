@@ -1,12 +1,29 @@
 name: python-validate
 run-name: python-validate
 on: [push]
+
+env:
+  DATABASE_URL: postgres://postgres:blopblopblop@localhost:5432/trade_tracker_test
+
 jobs:
   validate:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [ "3.8", "3.10" ]
+
+    services:
+      postgres:
+        image: postgres:13.9
+        env:
+          POSTGRES_PASSWORD: blopblopblop
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
 
     steps:
       - uses: actions/checkout@v3
