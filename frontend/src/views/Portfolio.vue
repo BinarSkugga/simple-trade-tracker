@@ -12,7 +12,21 @@ export default {
     const positionsFetched = ref(false)
     const updatingPositions = ref(false)
 
-    return {positionsFetched, updatingPositions, primaryColor: twPrimary}
+    const searchString = ref('')
+    const reverseSort = ref(false)
+    const sortField = ref('symbol')
+
+    const filterChoices = [
+      {text: 'Symbol', value: 'symbol'},
+      {text: 'Name', value: 'name'},
+      {text: 'Shares', value: 'quantity'},
+      {text: 'Value', value: 'getPositionTotalValue'},
+      {text: 'Income', value: 'getIncome'},
+      {text: 'Gain', value: 'getCapitalGain'}
+    ]
+
+    return {positionsFetched, updatingPositions, primaryColor: twPrimary,
+      searchString, reverseSort, sortField, filterChoices}
   },
   methods: {
     ...mapActions(usePositionStore, ['getPositions', "fetchPositions", "updatePositions"]),
@@ -26,6 +40,16 @@ export default {
     },
     getStockFromWSID(ws_id) {
       return this.getStocks().find(e => e.ws_id === ws_id)
+    },
+    getPositionTotalValue(position, stock) {
+      return (position.quantity * stock.price).toFixed(2)
+    },
+    getCapitalGain(position, stock) {
+      return (position.market_value - position.book_value).toFixed(2)
+    },
+    getIncome(position, stock) {
+      const distributionDivision = stock.div_distribution === 'Monthly' ? 12 : 4
+      return (position.quantity * stock.div_yield * stock.price / distributionDivision).toFixed(2)
     },
     getTotalMonthlyIncome() {
       return this.getPositions().reduce((a, position) => {
@@ -44,7 +68,33 @@ export default {
         const monthly_inc = (position.quantity * stock.div_yield * stock.price / 12)
         return a + monthly_inc
       }, 0).toFixed(2)
-    }
+    },
+    manglePositions(field, reverse, search) {
+      const positions = this.getPositions()
+      const upperSearch = search.toUpperCase()
+
+      let sortedPositions = positions.slice().sort((a, b) => {
+        const stockA = this.getStockFromWSID(a.ws_id)
+        const stockB = this.getStockFromWSID(b.ws_id)
+
+        if(['getPositionTotalValue', 'getCapitalGain', 'getIncome'].includes(field))
+          return this[field](a, stockA) - this[field](b, stockB)
+        if(['name', 'symbol'].includes(field))
+          return stockA[field].localeCompare(stockB[field])
+
+        return a[field] - b[field]
+      })
+
+      if(reverse) sortedPositions = sortedPositions.slice().reverse()
+
+      return sortedPositions.filter(position => {
+        if(upperSearch.length === 0) return true
+        const stock = this.getStockFromWSID(position.ws_id)
+        return stock.name.toUpperCase().indexOf(upperSearch) > -1
+            || stock.symbol.toUpperCase().indexOf(upperSearch) > -1
+            || stock.div_distribution.toUpperCase().indexOf(upperSearch) > -1
+      })
+    },
   },
   mounted() {
     Promise.all([this.fetchStocks(), this.fetchPositions()]).then(_ => {
@@ -76,9 +126,28 @@ export default {
               :disabled="updatingPositions">↻
       </button>
     </div>
+
+    <div class="text-center mt-4">
+      <input class="text-in w-[285px] m-2" type="text" placeholder="Search" v-model="searchString"/>
+      <div class="inline-block w-[285px] m-2">
+        <div class="inline-block mb-[-5px]">
+          <vs-select v-model="sortField" class="mr-2" :color="primaryColor">
+            <vs-select-item :key="item.value" :text="item.text" :modelValue="item.value"
+                            v-for="item in filterChoices"/>
+          </vs-select>
+        </div>
+        <div class="inline-block mb-[-5px]">
+          <vs-switch v-model="reverseSort" :color="primaryColor">
+            <template #off>Ordered</template>
+            <template #on>Reversed</template>
+          </vs-switch>
+        </div>
+      </div>
+    </div>
+
     <div class="body">
       <div class="flex flex-wrap justify-center" v-if="!updatingPositions && positionsFetched">
-        <PositionCard :position="position" :stock="getStockFromWSID(position.ws_id)" v-for="position in getPositions()"/>
+        <PositionCard :position="position" :stock="getStockFromWSID(position.ws_id)" v-for="position in manglePositions(sortField, reverseSort, searchString)"/>
       </div>
       <div class="flex justify-center p-10 pt-[100px]" v-else>
         <vs-progress class="min-w-[300px] max-w-[700px]" indeterminate :color="primaryColor"/>
