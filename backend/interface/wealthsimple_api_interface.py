@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional, List
+from typing import List
 
 from models.ws_account import WSAccount
 from models.ws_position import WSPosition
