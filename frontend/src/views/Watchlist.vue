@@ -22,7 +22,7 @@ export default {
       {text: 'Yield', value: 'dividend_yield'},
       {text: 'Price', value: 'price'},
       {text: 'Income', value: 'getMonthlyIncome'},
-      {text: 'ExDate', value: 'isExDataPassed'}
+      {text: 'ExDate', value: 'div_ex_date'}
     ]
 
     return {
@@ -42,7 +42,7 @@ export default {
       const upperSearch = search.toUpperCase()
 
       let sortedStocks = stocks.slice().sort((a, b) => {
-        if(['getMonthlyIncome', 'isExDataPassed'].includes(field))
+        if(['getMonthlyIncome'].includes(field))
           return this[field](a) - this[field](b)
         if(['name', 'symbol'].includes(field))
           return a[field].localeCompare(b[field])
@@ -64,9 +64,6 @@ export default {
       this.updateStocks().finally(_ => {
         this.updatingStocks = false
       })
-    },
-    isExDataPassed(stock) {
-      return Date.now() / 1000 >= stock.div_ex_date
     }
   },
   mounted() {

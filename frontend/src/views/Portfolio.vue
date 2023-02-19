@@ -65,7 +65,7 @@ export default {
         const stock = this.getStockFromWSID(position.ws_id)
         if(stock.div_distribution !== 'Quarterly') return a
 
-        const monthly_inc = (position.quantity * stock.div_yield * stock.price / 12)
+        const monthly_inc = (position.quantity * stock.div_yield * stock.price / 4)
         return a + monthly_inc
       }, 0).toFixed(2)
     },
