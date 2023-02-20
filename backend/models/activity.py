@@ -9,6 +9,7 @@ SQL_SCHEMA = """
         amount FLOAT,
         currency VARCHAR(16),
         
+        symbol VARCHAR(32),
         status VARCHAR(32),
         quantity INTEGER,
         security_id VARCHAR(256),
@@ -30,6 +31,7 @@ class Activity:
     amount: float
     currency: str
 
+    symbol: str = None
     status: str = None
     quantity: int = None
     security_id: str = None

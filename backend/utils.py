@@ -55,6 +55,8 @@ def build_activity(activity: dict) -> Activity:
 
             'amount': activity['net_cash']['amount'],
             'currency': activity['net_cash']['currency'],
+
+            'symbol': activity['symbol']
         })
     if activity['object'] == 'order' and activity['status'] != 'cancelled':
         return Activity(**{
@@ -65,6 +67,7 @@ def build_activity(activity: dict) -> Activity:
             'amount': activity['account_value']['amount'] / activity['quantity'],
             'currency': activity['account_value']['currency'],
 
+            'symbol': activity['symbol'],
             'status': activity['status'],
             'quantity': activity['quantity'],
             'security_id': activity['security_id'],

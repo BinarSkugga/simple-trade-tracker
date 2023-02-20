@@ -51,22 +51,28 @@ if admin is None:
 users.upsert(admin)
 
 # Init Watchlist Stocks
-watchlist_stocks = ws.watchlist()
-stocks.truncate()
-for w_stock in watchlist_stocks:
-    stocks.upsert(w_stock)
+current_stocks = stocks.list()
+
+if len(current_stocks) == 0:
+    watchlist_stocks = ws.watchlist()
+    for w_stock in watchlist_stocks:
+        stocks.upsert(w_stock)
 
 # Init Positions
-ws_positions = ws.positions()
-positions.truncate()
-for position in ws_positions:
-    positions.upsert(position)
+current_positions = positions.list()
+
+if len(current_positions) == 0:
+    ws_positions = ws.positions()
+    for position in ws_positions:
+        positions.upsert(position)
 
 # Init Activities
-ws_activities = ws.activity()
-activities.truncate()
-for activity in ws_activities:
-    activities.upsert(activity)
+current_activities = activities.list()
+
+if len(current_activities) == 0:
+    ws_activities = ws.activity()
+    for activity in ws_activities:
+        activities.upsert(activity)
 
 # Create FastAPI
 fastapi = FastAPI()

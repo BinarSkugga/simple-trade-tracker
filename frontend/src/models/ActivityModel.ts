@@ -6,6 +6,7 @@ export class ActivityModel {
     amount: number
     currency: string
 
+    symbol?: string = undefined
     status?: string = undefined
     quantity?: number = undefined
     security_id?: string = undefined
@@ -14,7 +15,7 @@ export class ActivityModel {
     order_sub_type?: string = undefined
 
 
-    constructor(id: number, type: string, date: number, amount: number, currency: string, status: string,
+    constructor(id: number, type: string, date: number, amount: number, currency: string, symbol: string, status: string,
                 quantity: number, security_id: string, limit_price: number, order_type: string,
                 order_sub_type: string) {
         this.id = id;
