@@ -51,7 +51,7 @@ if admin is None:
 users.upsert(admin)
 
 # Init Watchlist Stocks
-current_stocks = stocks.list()
+current_stocks = list(stocks.list())
 
 if len(current_stocks) == 0:
     watchlist_stocks = ws.watchlist()
@@ -59,7 +59,7 @@ if len(current_stocks) == 0:
         stocks.upsert(w_stock)
 
 # Init Positions
-current_positions = positions.list()
+current_positions = list(positions.list())
 
 if len(current_positions) == 0:
     ws_positions = ws.positions()
@@ -67,7 +67,7 @@ if len(current_positions) == 0:
         positions.upsert(position)
 
 # Init Activities
-current_activities = activities.list()
+current_activities = list(activities.list())
 
 if len(current_activities) == 0:
     ws_activities = ws.activity()
