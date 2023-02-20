@@ -5,7 +5,7 @@ from typing import List
 import requests
 from pyotp import TOTP
 
-from backend.config import WS_HOST
+from backend.config import WS_HOST, ACTIVITY_START
 from backend.seeking_alpha_api import get_stock_symbol, get_stocks_info
 from backend.interface.wealthsimple_api_interface import IWealthSimpleAPI
 from backend.models.ws_account import WSAccount
@@ -13,7 +13,8 @@ from backend.models.ws_position import WSPosition
 from backend.models.stock import Stock
 from backend.models.ws_token_set import WSTokenSet
 from backend.models.ws_user import WSUser
-from backend.utils import iso_to_epoch
+from backend.utils import iso_to_epoch, build_activity, get_activity_date
+from models.activity import Activity
 
 
 def ws_login(username: str, password: str, otp: str) -> WSTokenSet:
@@ -128,6 +129,30 @@ def ws_watchlist(access_token: str, account_id: str) -> List[Stock]:
     return simple_stocks
 
 
+def ws_activity(access_token: str, account_id: str, limit: int = 20) -> List[Activity]:
+    json_activities = []
+    bookmark = None
+
+    activities_date = lambda: (get_activity_date(a) for a in json_activities if get_activity_date(a) != -1)
+    while min(activities_date(), default=9999999999) >= ACTIVITY_START:
+        params = {'account_id': account_id, 'limit': limit}
+        if bookmark is not None:
+            params['bookmark'] = bookmark
+
+        response = requests.get(f'{WS_HOST}/account/activities', params=params, headers={'Authorization': access_token})
+        data = response.json()
+        bookmark = data['bookmark']
+        json_activities += response.json()['results']
+
+    activities = []
+    for activity in json_activities:
+        built = build_activity(activity)
+        if built is not None:
+            activities.append(build_activity(activity))
+
+    return activities
+
+
 def ws_security_info(access_token: str, security_id: str) -> dict:
     response = requests.get(f'{WS_HOST}/securities/{security_id}', headers={'Authorization': access_token})
     body = response.json()
@@ -191,6 +216,10 @@ class WealthSimpleAPI(IWealthSimpleAPI):
     def watchlist(self):
         self.refresh(self.key_ring.refresh)
         return ws_watchlist(self.key_ring.access, self.account.id)
+
+    def activity(self):
+        self.refresh(self.key_ring.refresh)
+        return ws_activity(self.key_ring.access, self.account.id)
 
     def security_info(self, security_id: str):
         self.refresh(self.key_ring.refresh)

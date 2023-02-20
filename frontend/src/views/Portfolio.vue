@@ -4,6 +4,7 @@ import {mapActions} from "pinia";
 import {usePositionStore} from "@/stores/PositionsStore";
 import {useStocksStore} from "@/stores/StocksStore";
 import PositionCard from "@/components/PositionCard.vue";
+import {useActivityStore} from "@/stores/ActivitiesStore";
 
 export default {
   name: "portfolio",
@@ -25,12 +26,15 @@ export default {
       {text: 'Gain', value: 'getCapitalGain'}
     ]
 
-    return {positionsFetched, updatingPositions, primaryColor: twPrimary,
-      searchString, reverseSort, sortField, filterChoices}
+    return {
+      positionsFetched, updatingPositions, primaryColor: twPrimary,
+      searchString, reverseSort, sortField, filterChoices
+    }
   },
   methods: {
     ...mapActions(usePositionStore, ['getPositions', "fetchPositions", "updatePositions"]),
     ...mapActions(useStocksStore, ['getStocks', "fetchStocks"]),
+    ...mapActions(useActivityStore, ['getActivities', "fetchActivities"]),
 
     updatePositionsWithLoading() {
       this.updatingPositions = true
@@ -54,7 +58,7 @@ export default {
     getTotalMonthlyIncome() {
       return this.getPositions().reduce((a, position) => {
         const stock = this.getStockFromWSID(position.ws_id)
-        if(stock.div_distribution !== 'Monthly') return a
+        if (stock.div_distribution !== 'Monthly') return a
 
         const monthly_inc = (position.quantity * stock.div_yield * stock.price / 12)
         return a + monthly_inc
@@ -63,10 +67,16 @@ export default {
     getTotalQuarterlyIncome() {
       return this.getPositions().reduce((a, position) => {
         const stock = this.getStockFromWSID(position.ws_id)
-        if(stock.div_distribution !== 'Quarterly') return a
+        if (stock.div_distribution !== 'Quarterly') return a
 
         const monthly_inc = (position.quantity * stock.div_yield * stock.price / 4)
         return a + monthly_inc
+      }, 0).toFixed(2)
+    },
+    getLifetimeDividends() {
+      return this.getActivities().reduce((a, activity) => {
+        if(activity.type !== 'dividend') return a
+        return a + activity.amount
       }, 0).toFixed(2)
     },
     manglePositions(field, reverse, search) {
@@ -77,18 +87,18 @@ export default {
         const stockA = this.getStockFromWSID(a.ws_id)
         const stockB = this.getStockFromWSID(b.ws_id)
 
-        if(['getPositionTotalValue', 'getCapitalGain', 'getIncome'].includes(field))
+        if (['getPositionTotalValue', 'getCapitalGain', 'getIncome'].includes(field))
           return this[field](a, stockA) - this[field](b, stockB)
-        if(['name', 'symbol'].includes(field))
+        if (['name', 'symbol'].includes(field))
           return stockA[field].localeCompare(stockB[field])
 
         return a[field] - b[field]
       })
 
-      if(reverse) sortedPositions = sortedPositions.slice().reverse()
+      if (reverse) sortedPositions = sortedPositions.slice().reverse()
 
       return sortedPositions.filter(position => {
-        if(upperSearch.length === 0) return true
+        if (upperSearch.length === 0) return true
         const stock = this.getStockFromWSID(position.ws_id)
         return stock.name.toUpperCase().indexOf(upperSearch) > -1
             || stock.symbol.toUpperCase().indexOf(upperSearch) > -1
@@ -97,7 +107,7 @@ export default {
     },
   },
   mounted() {
-    Promise.all([this.fetchStocks(), this.fetchPositions()]).then(_ => {
+    Promise.all([this.fetchStocks(), this.fetchPositions(), this.fetchActivities()]).then(_ => {
       this.positionsFetched = true
     })
   }
@@ -115,6 +125,9 @@ export default {
       </span>
       <span class="text-center" v-if="positionsFetched">
         ${{ getTotalQuarterlyIncome() }} <br/>Total Quarterly Income
+      </span>
+      <span class="text-center" v-if="positionsFetched">
+        ${{ getLifetimeDividends() }} <br/>Lifetime Dividends Paid
       </span>
     </div>
 
@@ -147,7 +160,8 @@ export default {
 
     <div class="body">
       <div class="flex flex-wrap justify-center" v-if="!updatingPositions && positionsFetched">
-        <PositionCard :position="position" :stock="getStockFromWSID(position.ws_id)" v-for="position in manglePositions(sortField, reverseSort, searchString)"/>
+        <PositionCard :position="position" :stock="getStockFromWSID(position.ws_id)"
+                      v-for="position in manglePositions(sortField, reverseSort, searchString)"/>
       </div>
       <div class="flex justify-center p-10 pt-[100px]" v-else>
         <vs-progress class="min-w-[300px] max-w-[700px]" indeterminate :color="primaryColor"/>

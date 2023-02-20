@@ -7,7 +7,7 @@ from starlette.staticfiles import StaticFiles
 
 from backend.auth_utils import hash_password
 from backend.database_utils import execute, drop_database, create_database
-from backend.models import user, stock, ws_position
+from backend.models import user, stock, ws_position, activity
 from backend.models.ws_position import WSPosition
 from backend.models.stock import Stock
 from backend.models.user import User
@@ -16,6 +16,8 @@ from backend.wealthsimple_utils import WealthSimpleAPI
 from backend.config import WS_ACCOUNT, TOTP_SECRET, WS_TFSA_ID, DROP_DB
 from backend.routes import auth_routes, stock_routes, position_routes
 from backend.utils import create_dist_folder
+from models.activity import Activity
+from routes import activity_routes
 
 email, password = WS_ACCOUNT.split(':', 1)
 ws = WealthSimpleAPI(email, password, TOTP_SECRET)
@@ -33,11 +35,13 @@ except DatabaseError as e:
 execute(user.SQL_SCHEMA, fetch=False)
 execute(stock.SQL_SCHEMA, fetch=False)
 execute(ws_position.SQL_SCHEMA, fetch=False)
+execute(activity.SQL_SCHEMA, fetch=False)
 
 # Create Repositories
 users = Repository('user', User)
 stocks = Repository('stock', Stock)
 positions = Repository('position', WSPosition)
+activities = Repository('activity', Activity)
 
 # Create Super Admin
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'blopblopblop')
@@ -52,13 +56,17 @@ stocks.truncate()
 for w_stock in watchlist_stocks:
     stocks.upsert(w_stock)
 
-print(watchlist_stocks)
-
 # Init Positions
 ws_positions = ws.positions()
 positions.truncate()
 for position in ws_positions:
     positions.upsert(position)
+
+# Init Activities
+ws_activities = ws.activity()
+activities.truncate()
+for activity in ws_activities:
+    activities.upsert(activity)
 
 # Create FastAPI
 fastapi = FastAPI()
@@ -74,6 +82,7 @@ fastapi.add_middleware(
 auth_routes.load(fastapi)
 stock_routes.load(fastapi, ws)
 position_routes.load(fastapi, ws)
+activity_routes.load(fastapi)
 
 create_dist_folder('frontend/dist')
 fastapi.mount("/", StaticFiles(directory="frontend/dist", html=True), name="frontend")
