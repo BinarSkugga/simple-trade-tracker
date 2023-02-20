@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 
-from auth_utils import auth
-from models.activity import Activity
-from repository import Repository
+from backend.auth_utils import auth
+from backend.models.activity import Activity
+from backend.repository import Repository
 
 
 def load(fastapi: FastAPI):

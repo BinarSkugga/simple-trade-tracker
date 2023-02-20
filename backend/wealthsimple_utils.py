@@ -14,7 +14,7 @@ from backend.models.stock import Stock
 from backend.models.ws_token_set import WSTokenSet
 from backend.models.ws_user import WSUser
 from backend.utils import iso_to_epoch, build_activity, get_activity_date
-from models.activity import Activity
+from backend.models.activity import Activity
 
 
 def ws_login(username: str, password: str, otp: str) -> WSTokenSet:

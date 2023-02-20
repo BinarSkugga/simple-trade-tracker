@@ -1,6 +1,6 @@
 import os
 
-from utils import iso_to_epoch
+from backend.utils import iso_to_epoch
 
 DROP_DB = os.environ.get('DROP_DB', 'false') == 'true'
 

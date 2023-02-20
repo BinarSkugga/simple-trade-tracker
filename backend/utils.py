@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 from typing import Optional
 
-from models.activity import Activity
+from backend.models.activity import Activity
 
 
 def iso_to_epoch(iso: str, format: str = "%Y-%m-%d") -> Optional[int]:
