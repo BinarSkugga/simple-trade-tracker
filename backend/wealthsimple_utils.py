@@ -217,7 +217,7 @@ class WealthSimpleAPI(IWealthSimpleAPI):
         self.refresh(self.key_ring.refresh)
         return ws_watchlist(self.key_ring.access, self.account.id)
 
-    def activity(self):
+    def activities(self):
         self.refresh(self.key_ring.refresh)
         return ws_activity(self.key_ring.access, self.account.id)
 

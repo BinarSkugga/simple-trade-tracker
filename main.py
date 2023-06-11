@@ -69,7 +69,7 @@ if len(current_positions) == 0:
 current_activities = list(activities.list())
 
 if len(current_activities) == 0:
-    ws_activities = ws.activity()
+    ws_activities = ws.activities()
     for activity in ws_activities:
         activities.upsert(activity)
 
@@ -87,7 +87,7 @@ fastapi.add_middleware(
 auth_routes.load(fastapi)
 stock_routes.load(fastapi, ws)
 position_routes.load(fastapi, ws)
-activity_routes.load(fastapi)
+activity_routes.load(fastapi, ws)
 
 create_dist_folder('frontend/dist')
 fastapi.mount("/", StaticFiles(directory="frontend/dist", html=True), name="frontend")

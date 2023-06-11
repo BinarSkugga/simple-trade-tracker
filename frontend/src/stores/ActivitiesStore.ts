@@ -1,6 +1,7 @@
 import {defineStore, storeToRefs} from "pinia";
 import {useUsersStore} from "@/stores/UsersStore";
-import {api_activities} from "@/api/activity";
+import {api_activities, api_update_activities} from "@/api/activity";
+import {api_update_positions} from "@/api/position";
 
 
 export const useActivityStore = defineStore({
@@ -15,6 +16,12 @@ export const useActivityStore = defineStore({
         fetchActivities() {
             const {token} = storeToRefs(useUsersStore())
             return api_activities(token.value!).then(response => {
+                this.activities = response.data
+            }).catch(error => {})
+        },
+        updateActivities() {
+            const {token} = storeToRefs(useUsersStore())
+            return api_update_activities(token.value!).then(response => {
                 this.activities = response.data
             }).catch(error => {})
         }

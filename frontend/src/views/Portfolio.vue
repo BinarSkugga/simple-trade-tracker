@@ -34,11 +34,11 @@ export default {
   methods: {
     ...mapActions(usePositionStore, ['getPositions', "fetchPositions", "updatePositions"]),
     ...mapActions(useStocksStore, ['getStocks', "fetchStocks"]),
-    ...mapActions(useActivityStore, ['getActivities', "fetchActivities"]),
+    ...mapActions(useActivityStore, ['getActivities', "fetchActivities", "updateActivities"]),
 
     updatePositionsWithLoading() {
       this.updatingPositions = true
-      this.updatePositions().finally(_ => {
+      Promise.all([this.updatePositions(), this.updateActivities()]).finally(_ => {
         this.updatingPositions = false
       })
     },
