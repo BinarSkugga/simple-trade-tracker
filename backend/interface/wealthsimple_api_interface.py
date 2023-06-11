@@ -6,7 +6,7 @@ from backend.models.ws_position import WSPosition
 from backend.models.stock import Stock
 from backend.models.ws_token_set import WSTokenSet
 from backend.models.ws_user import WSUser
-from models.activity import Activity
+from backend.models.activity import Activity
 
 
 class FailedWSLogin(BaseException):
