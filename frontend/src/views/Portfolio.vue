@@ -15,6 +15,7 @@ export default {
 
     const searchString = ref('')
     const reverseSort = ref(false)
+    const includeDivGains = ref(true)
     const sortField = ref('symbol')
 
     const filterChoices = [
@@ -28,7 +29,7 @@ export default {
 
     return {
       positionsFetched, updatingPositions, primaryColor: twPrimary,
-      searchString, reverseSort, sortField, filterChoices
+      searchString, reverseSort, sortField, filterChoices, includeDivGains
     }
   },
   methods: {
@@ -59,7 +60,9 @@ export default {
       }, 0)
     },
     getAbsoluteGain(position, stock) {
-      return (this.getCapitalGain(position) + this.getLifetimeDividends(stock)).toFixed(2)
+      if(this.includeDivGains.value)
+        return (this.getCapitalGain(position) + this.getLifetimeDividends(stock)).toFixed(2)
+      return this.getCapitalGain(position).toFixed(2)
     },
     getIncome(position, stock) {
       const distributionDivision = stock.div_distribution === 'Monthly' ? 12 : 4
@@ -151,8 +154,8 @@ export default {
     </div>
 
     <div class="text-center mt-4">
-      <input class="text-in w-[285px] m-2" type="text" placeholder="Search" v-model="searchString"/>
-      <div class="inline-block w-[285px] m-2">
+      <input class="text-in w-[370px] m-2" type="text" placeholder="Search" v-model="searchString"/>
+      <div class="inline-block w-[370px] m-2">
         <div class="inline-block mb-[-5px]">
           <vs-select v-model="sortField" class="mr-2" :color="primaryColor">
             <vs-select-item :key="item.value" :text="item.text" :modelValue="item.value"
@@ -165,12 +168,19 @@ export default {
             <template #on>Reversed</template>
           </vs-switch>
         </div>
+        <div class="inline-block mb-[-5px] ml-[7px]">
+          <vs-switch v-model="includeDivGains" :color="primaryColor">
+            <template #off>Capital</template>
+            <template #on>Dividends</template>
+          </vs-switch>
+        </div>
       </div>
     </div>
 
     <div class="body">
       <div class="flex flex-wrap justify-center" v-if="!updatingPositions && positionsFetched">
         <PositionCard :position="position" :stock="getStockFromWSID(position.ws_id)"
+                      :include-div-gains="includeDivGains"
                       v-for="position in manglePositions(sortField, reverseSort, searchString)"/>
       </div>
       <div class="flex justify-center p-10 pt-[100px]" v-else>

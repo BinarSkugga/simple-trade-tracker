@@ -4,7 +4,7 @@ import {useActivityStore} from "@/stores/ActivitiesStore";
 
 export default {
   name: "PositionCard",
-  props: ['position', 'stock'],
+  props: ['position', 'stock', 'includeDivGains'],
   methods: {
     ...mapActions(useActivityStore, ['getActivities']),
 
@@ -23,20 +23,21 @@ export default {
     },
     getLifetimeDividends(stock) {
       return this.getActivities().reduce((a, activity) => {
-        console.log(stock, activity)
         if(activity.type !== 'dividend' || activity.symbol != stock.symbol) return a
         return a + activity.amount
       }, 0)
     },
     getAbsoluteGain(position, stock) {
-      return (this.getCapitalGain(position) + this.getLifetimeDividends(stock)).toFixed(2)
+      if(this.includeDivGains)
+        return (this.getCapitalGain(position) + this.getLifetimeDividends(stock)).toFixed(2)
+      return this.getCapitalGain(position).toFixed(2)
     },
   }
 }
 </script>
 
 <template>
-  <div class="card m-2 min-w-[300px] max-w-[300px] select-none">
+  <div class="card m-2 min-w-[365px] max-w-[365px] select-none">
     <div class="flex justify-between">
       <span class="font-bold">{{ stock.symbol }}</span>
       <span class="font-bold text-sm">${{ getTotalValue(position, stock) }}</span>
