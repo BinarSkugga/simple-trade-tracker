@@ -5,10 +5,10 @@ SQL_SCHEMA = """
         id BIGSERIAL,
         type VARCHAR(32),
         date BIGINT,
-        
+
         amount FLOAT,
         currency VARCHAR(16),
-        
+
         symbol VARCHAR(32),
         status VARCHAR(32),
         quantity INTEGER,
@@ -16,7 +16,7 @@ SQL_SCHEMA = """
         limit_price FLOAT,
         order_type VARCHAR(32),
         order_sub_type VARCHAR(32),
-        
+
         PRIMARY KEY (id)
     );
 """
