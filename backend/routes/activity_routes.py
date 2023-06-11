@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from backend.auth_utils import auth
 from backend.models.activity import Activity
 from backend.repository import Repository
-from interface.wealthsimple_api_interface import IWealthSimpleAPI
+from backend.interface.wealthsimple_api_interface import IWealthSimpleAPI
 
 
 def load(fastapi: FastAPI, ws_api: IWealthSimpleAPI):
