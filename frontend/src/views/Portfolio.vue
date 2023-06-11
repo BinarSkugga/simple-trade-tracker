@@ -23,7 +23,7 @@ export default {
       {text: 'Shares', value: 'quantity'},
       {text: 'Value', value: 'getPositionTotalValue'},
       {text: 'Income', value: 'getIncome'},
-      {text: 'Gain', value: 'getCapitalGain'}
+      {text: 'Gain', value: 'getAbsoluteGain'}
     ]
 
     return {
@@ -48,8 +48,18 @@ export default {
     getPositionTotalValue(position, stock) {
       return (position.quantity * stock.price).toFixed(2)
     },
-    getCapitalGain(position, stock) {
-      return (position.market_value - position.book_value).toFixed(2)
+    getCapitalGain(position) {
+      return (position.market_value - position.book_value)
+    },
+    getLifetimeDividends(stock) {
+      return this.getActivities().reduce((a, activity) => {
+        console.log(stock, activity)
+        if(activity.type !== 'dividend' || activity.symbol != stock.symbol) return a
+        return a + activity.amount
+      }, 0)
+    },
+    getAbsoluteGain(position, stock) {
+      return (this.getCapitalGain(position) + this.getLifetimeDividends(stock)).toFixed(2)
     },
     getIncome(position, stock) {
       const distributionDivision = stock.div_distribution === 'Monthly' ? 12 : 4
@@ -73,7 +83,7 @@ export default {
         return a + monthly_inc
       }, 0).toFixed(2)
     },
-    getLifetimeDividends() {
+    getTotalLifetimeDividends() {
       return this.getActivities().reduce((a, activity) => {
         if(activity.type !== 'dividend') return a
         return a + activity.amount
@@ -87,7 +97,7 @@ export default {
         const stockA = this.getStockFromWSID(a.ws_id)
         const stockB = this.getStockFromWSID(b.ws_id)
 
-        if (['getPositionTotalValue', 'getCapitalGain', 'getIncome'].includes(field))
+        if (['getPositionTotalValue', 'getAbsoluteGain', 'getIncome'].includes(field))
           return this[field](a, stockA) - this[field](b, stockB)
         if (['name', 'symbol'].includes(field))
           return stockA[field].localeCompare(stockB[field])
@@ -127,7 +137,7 @@ export default {
         ${{ getTotalQuarterlyIncome() }} <br/>Total Quarterly Income
       </span>
       <span class="text-center" v-if="positionsFetched">
-        ${{ getLifetimeDividends() }} <br/>Lifetime Dividends Paid
+        ${{ getTotalLifetimeDividends() }} <br/>Lifetime Dividends Paid
       </span>
     </div>
 
