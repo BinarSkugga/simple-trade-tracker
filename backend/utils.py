@@ -28,8 +28,12 @@ def get_activity_date(activity: dict) -> int:
         str_date = activity['effective_date'].split('T')[0]
     elif activity['object'] == 'deposit' and activity['accepted_at'] is not None:
         str_date = activity['accepted_at'].split('T')[0]
+    elif activity['object'] == 'internal_transfer' and activity['completed_at'] is not None:
+        str_date = activity['completed_at'].split('T')[0]
     elif activity['object'] == 'order' and activity['completed_at'] is not None:
         str_date = activity['completed_at'].split('T')[0]
+    elif activity['object'] == 'reimbursement' and activity['effective_date'] is not None:
+        str_date = activity['effective_date']
     else:
         return -1
 
@@ -37,6 +41,19 @@ def get_activity_date(activity: dict) -> int:
 
 
 def build_activity(activity: dict) -> Activity:
+    if activity['object'] not in ['deposit', 'dividend', 'order']:
+        print(activity)
+    if activity['object'] == 'internal_transfer':
+        amount = sum(float(asset['quantity']) for asset in activity['assets'] if asset['security_id'] == 'sec-c-cad')
+        return Activity(**{
+            'id': None,
+            'type': 'deposit',
+            'date': get_activity_date(activity),
+
+            'amount': amount,
+            'currency': 'CAD',
+            'status': activity['status']
+        })
     if activity['object'] == 'deposit':
         return Activity(**{
             'id': None,
@@ -64,8 +81,8 @@ def build_activity(activity: dict) -> Activity:
             'type': activity['object'],
             'date': get_activity_date(activity),
 
-            'amount': activity['account_value']['amount'] / activity['quantity'],
-            'currency': activity['account_value']['currency'],
+            'amount': activity['account_hold_value']['amount'] / activity['quantity'],
+            'currency': activity['account_hold_value']['currency'],
 
             'symbol': activity['symbol'],
             'status': activity['status'],
@@ -73,5 +90,6 @@ def build_activity(activity: dict) -> Activity:
             'security_id': activity['security_id'],
             'limit_price': activity['limit_price']['amount'],
             'order_type': activity['order_type'],
-            'order_sub_type': activity['order_sub_type']
+            'order_sub_type': activity['order_sub_type'],
+            'auto_order_type': activity['auto_order_type']
         })

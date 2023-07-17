@@ -5,6 +5,7 @@ import {usePositionStore} from "@/stores/PositionsStore";
 import {useStocksStore} from "@/stores/StocksStore";
 import PositionCard from "@/components/PositionCard.vue";
 import {useActivityStore} from "@/stores/ActivitiesStore";
+import {formnum} from "@/utils";
 
 export default {
   name: "portfolio",
@@ -33,6 +34,7 @@ export default {
     }
   },
   methods: {
+    formnum,
     ...mapActions(usePositionStore, ['getPositions', "fetchPositions", "updatePositions"]),
     ...mapActions(useStocksStore, ['getStocks', "fetchStocks"]),
     ...mapActions(useActivityStore, ['getActivities', "fetchActivities", "updateActivities"]),
@@ -47,7 +49,7 @@ export default {
       return this.getStocks().find(e => e.ws_id === ws_id)
     },
     getPositionTotalValue(position, stock) {
-      return (position.quantity * stock.price).toFixed(2)
+      return (position.quantity * stock.price)
     },
     getCapitalGain(position) {
       return (position.market_value - position.book_value)
@@ -55,18 +57,18 @@ export default {
     getLifetimeDividends(stock) {
       return this.getActivities().reduce((a, activity) => {
         console.log(stock, activity)
-        if(activity.type !== 'dividend' || activity.symbol != stock.symbol) return a
+        if(activity.type !== 'dividend' || activity.symbol !== stock.symbol) return a
         return a + activity.amount
       }, 0)
     },
     getAbsoluteGain(position, stock) {
       if(this.includeDivGains.value)
-        return (this.getCapitalGain(position) + this.getLifetimeDividends(stock)).toFixed(2)
-      return this.getCapitalGain(position).toFixed(2)
+        return (this.getCapitalGain(position) + this.getLifetimeDividends(stock))
+      return this.getCapitalGain(position)
     },
     getIncome(position, stock) {
       const distributionDivision = stock.div_distribution === 'Monthly' ? 12 : 4
-      return (position.quantity * stock.div_yield * stock.price / distributionDivision).toFixed(2)
+      return (position.quantity * stock.div_yield * stock.price / distributionDivision)
     },
     getTotalMonthlyIncome() {
       return this.getPositions().reduce((a, position) => {
@@ -75,22 +77,22 @@ export default {
 
         const monthly_inc = (position.quantity * stock.div_yield * stock.price / 12)
         return a + monthly_inc
-      }, 0).toFixed(2)
+      }, 0)
     },
     getTotalQuarterlyIncome() {
       return this.getPositions().reduce((a, position) => {
         const stock = this.getStockFromWSID(position.ws_id)
         if (stock.div_distribution !== 'Quarterly') return a
 
-        const monthly_inc = (position.quantity * stock.div_yield * stock.price / 4)
-        return a + monthly_inc
-      }, 0).toFixed(2)
+        const quart_inc = (position.quantity * stock.div_yield * stock.price / 4)
+        return a + quart_inc
+      }, 0)
     },
     getTotalLifetimeDividends() {
       return this.getActivities().reduce((a, activity) => {
         if(activity.type !== 'dividend') return a
         return a + activity.amount
-      }, 0).toFixed(2)
+      }, 0)
     },
     manglePositions(field, reverse, search) {
       const positions = this.getPositions()
@@ -134,13 +136,13 @@ export default {
     </div>
     <div class="flex justify-around mt-2">
       <span class="text-center" v-if="positionsFetched">
-        ${{ getTotalMonthlyIncome() }} <br/>Total Monthly Income
+        ${{ formnum(getTotalMonthlyIncome()) }} <br/>Total Monthly Income
       </span>
       <span class="text-center" v-if="positionsFetched">
-        ${{ getTotalQuarterlyIncome() }} <br/>Total Quarterly Income
+        ${{ formnum(getTotalQuarterlyIncome()) }} <br/>Total Quarterly Income
       </span>
       <span class="text-center" v-if="positionsFetched">
-        ${{ getTotalLifetimeDividends() }} <br/>Lifetime Dividends Paid
+        ${{ formnum(getTotalLifetimeDividends()) }} <br/>Lifetime Dividends Paid
       </span>
     </div>
 

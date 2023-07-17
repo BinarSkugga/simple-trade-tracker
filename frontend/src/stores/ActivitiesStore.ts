@@ -1,7 +1,6 @@
 import {defineStore, storeToRefs} from "pinia";
 import {useUsersStore} from "@/stores/UsersStore";
 import {api_activities, api_update_activities} from "@/api/activity";
-import {api_update_positions} from "@/api/position";
 
 
 export const useActivityStore = defineStore({

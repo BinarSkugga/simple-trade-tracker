@@ -16,6 +16,7 @@ SQL_SCHEMA = """
         limit_price FLOAT,
         order_type VARCHAR(32),
         order_sub_type VARCHAR(32),
+        auto_order_type VARCHAR(32),
 
         PRIMARY KEY (id)
     );
@@ -38,3 +39,4 @@ class Activity:
     limit_price: float = None
     order_type: str = None
     order_sub_type: str = None
+    auto_order_type: str = None

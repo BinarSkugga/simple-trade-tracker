@@ -45,6 +45,9 @@ export default {
           <router-link to="/portfolio"  class="side-menu-item" :class="{'selected': currentRoute === 'portfolio'}" @click="toggleSidebar">
             Portfolio
           </router-link>
+          <router-link to="/breakdown"  class="side-menu-item" :class="{'selected': currentRoute === 'breakdown'}" @click="toggleSidebar">
+            Breakdown
+          </router-link>
         </div>
 
         <div v-ripple class="button m-2 flex-end text-center" type="button" @click="logout()">
