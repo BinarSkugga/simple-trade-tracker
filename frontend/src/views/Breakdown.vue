@@ -6,7 +6,7 @@ import {useAccountsStore} from "@/stores/AccountsStore";
 import {ref} from "vue";
 import VueApexCharts from "vue3-apexcharts";
 import {formnum} from "@/utils";
-import {gainBreakdownChart, stockBreakdownChart} from "@/charts";
+import {gainBreakdownChart, sectorBreakdownChart, stockBreakdownChart} from "@/charts";
 import {useStocksStore} from "@/stores/StocksStore";
 
 export default {
@@ -22,7 +22,10 @@ export default {
     const stocksSeries = []
     const stocksOptions = stockBreakdownChart
 
-    return {positionsFetched, gainOptions, gainSeries, stocksSeries, stocksOptions}
+    const sectorSeries = []
+    const sectorOptions = sectorBreakdownChart
+
+    return {positionsFetched, gainOptions, gainSeries, stocksSeries, stocksOptions, sectorSeries, sectorOptions}
   },
   methods: {
     formnum,
@@ -68,6 +71,14 @@ export default {
     },
     getTotalGainPercent() {
       return this.getTotalGain() / this.currentTotalValue() * 100
+    },
+    getSectorValue(sector) {
+      return this.getPositions().reduce((a, position) => {
+        const stock = this.getStockFromWSID(position.ws_id)
+        if(stock.sector !== sector) return a
+        console.log(sector, stock.symbol)
+        return a + position.book_value
+      }, 0)
     }
   },
   mounted() {
@@ -79,6 +90,12 @@ export default {
         this.stocksSeries.push(position.book_value)
         const stock = this.getStockFromWSID(position.ws_id)
         this.stocksOptions.labels.push(stock.symbol)
+
+        if(stock.sector === 'Consumer Discretionary') stock.sector = 'Consumer'
+        if(this.sectorOptions.labels.includes(stock.sector)
+            || (stock.sector === null && this.sectorOptions.labels.includes('Diversified'))) return
+        this.sectorSeries.push(this.getSectorValue(stock.sector))
+        this.sectorOptions.labels.push(stock.sector === null ? 'Diversified' : stock.sector)
       }, 0)
     })
   }
@@ -108,6 +125,11 @@ export default {
       <div class="min-w-[380px] w-[380px] m-2">
         <div class="text-center font-bold">Stocks</div>
         <apexchart type="pie" :options="stocksOptions" :series="stocksSeries"></apexchart>
+      </div>
+
+      <div class="min-w-[380px] w-[380px] m-2">
+        <div class="text-center font-bold">Sectors</div>
+        <apexchart type="pie" :options="sectorOptions" :series="sectorSeries"></apexchart>
       </div>
     </div>
   </div>

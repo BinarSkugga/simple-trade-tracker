@@ -1,3 +1,4 @@
+import json
 import os
 import time
 from typing import List
@@ -125,6 +126,7 @@ def ws_watchlist(access_token: str, account_id: str) -> List[Stock]:
         stock.div_ex_date = iso_to_epoch(details['dividends'][0]['exDate'])
         stock.div_yield = details['divYield'] / 100
         stock.div_distribution = details['divDistribution']
+        stock.sector = details['sectorname']
 
     return simple_stocks
 

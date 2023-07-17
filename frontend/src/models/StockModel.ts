@@ -21,11 +21,13 @@ export class StockModel {
     div_yield: number
     div_distribution: string
 
+    sector: string
+
 
     constructor(id: number, ws_id: string, name: string, type: string, symbol: string, currency: string,
                 exchange: string, price: number, can_use_fractional: boolean, buyable: boolean, limited: boolean,
                 eps: number, pe: number, high52: number, low52: number, div_ex_date: number,
-                div_yield: number, div_distribution: string) {
+                div_yield: number, div_distribution: string, sector: string) {
         this.id = id;
         this.ws_id = ws_id;
         this.name = name;
@@ -44,5 +46,6 @@ export class StockModel {
         this.div_ex_date = div_ex_date;
         this.div_yield = div_yield;
         this.div_distribution = div_distribution
+        this.sector = sector
     }
 }

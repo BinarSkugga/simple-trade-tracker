@@ -46,3 +46,15 @@ export const stockBreakdownChart = {
         }
     },
 }
+
+export const sectorBreakdownChart = {
+    ...defaultPieChartOpts,
+    labels: [],
+    plotOptions: {
+        pie: {
+            dataLabels: {
+                offset: -15
+            }
+        }
+    },
+}

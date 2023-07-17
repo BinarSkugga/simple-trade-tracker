@@ -9,6 +9,7 @@ export default {
   },
   methods: {
     getYield(stock) {
+      console.log(stock)
       return (stock.div_yield * 100).toFixed(2)
     },
     getIncome(stock) {

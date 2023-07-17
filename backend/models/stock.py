@@ -26,6 +26,8 @@ SQL_SCHEMA = """
         div_ex_date BIGINT,
         div_yield FLOAT,
         div_distribution VARCHAR(24),
+        
+        sector VARCHAR(64),
 
         PRIMARY KEY (id)
     );
@@ -58,3 +60,5 @@ class Stock:
     div_ex_date: int = None
     div_yield: float = None
     div_distribution: str = None
+
+    sector: str = None

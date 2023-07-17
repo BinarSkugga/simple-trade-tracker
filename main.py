@@ -17,7 +17,7 @@ from backend.wealthsimple_utils import WealthSimpleAPI
 from backend.config import WS_ACCOUNT, TOTP_SECRET, WS_TFSA_ID, DROP_DB
 from backend.routes import auth_routes, stock_routes, position_routes, activity_routes
 from backend.utils import create_dist_folder
-from routes import account_routes
+from backend.routes import account_routes
 
 email, password = WS_ACCOUNT.split(':', 1)
 ws = WealthSimpleAPI(email, password, TOTP_SECRET)

@@ -41,8 +41,6 @@ def get_activity_date(activity: dict) -> int:
 
 
 def build_activity(activity: dict) -> Activity:
-    if activity['object'] not in ['deposit', 'dividend', 'order']:
-        print(activity)
     if activity['object'] == 'internal_transfer':
         amount = sum(float(asset['quantity']) for asset in activity['assets'] if asset['security_id'] == 'sec-c-cad')
         return Activity(**{

@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 
-from auth_utils import auth
-from config import WS_TFSA_ID
-from interface.wealthsimple_api_interface import IWealthSimpleAPI
+from backend.auth_utils import auth
+from backend.config import WS_TFSA_ID
+from backend.interface.wealthsimple_api_interface import IWealthSimpleAPI
 
 
 def load(fastapi: FastAPI, ws_api: IWealthSimpleAPI):
