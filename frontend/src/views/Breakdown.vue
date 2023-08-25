@@ -37,7 +37,12 @@ export default {
     getStockFromWSID(ws_id) {
       return this.getStocks().find(e => e.ws_id === ws_id)
     },
-    currentTotalValue() {
+    currentTotalMarketValue() {
+      return this.getPositions().reduce((a, position) => {
+        return a + position.market_value
+      }, 0)
+    },
+    currentTotalBookValue() {
       return this.getPositions().reduce((a, position) => {
         return a + position.book_value
       }, 0)
@@ -58,42 +63,49 @@ export default {
       return this.getTotalDeposits() - this.getCurrentAccount().available_balance
     },
     getCapitalGain() {
-      return this.currentTotalValue() - this.getUsedDeposits() - this.getTotalLifetimeDividends()
+      return this.currentTotalMarketValue() - this.currentTotalBookValue()
     },
     getCapitalGainPercent() {
-      return this.getCapitalGain() / this.currentTotalValue() * 100
+      return this.getCapitalGain() / this.currentTotalMarketValue() * 100
     },
     getDividendGainPercent() {
-      return this.getTotalLifetimeDividends() / this.currentTotalValue() * 100
+      return this.getTotalLifetimeDividends() / this.currentTotalMarketValue() * 100
     },
     getTotalGain() {
       return this.getTotalLifetimeDividends() + this.getCapitalGain()
     },
     getTotalGainPercent() {
-      return this.getTotalGain() / this.currentTotalValue() * 100
+      return this.getTotalGain() / this.currentTotalMarketValue() * 100
     },
     getSectorValue(sector) {
       return this.getPositions().reduce((a, position) => {
         const stock = this.getStockFromWSID(position.ws_id)
-        if(stock.sector !== sector) return a
-        console.log(sector, stock.symbol)
-        return a + position.book_value
+        if (stock.sector !== sector) return a
+        return a + position.market_value
       }, 0)
     }
   },
   mounted() {
     Promise.all([this.fetchStocks(), this.fetchPositions(), this.fetchActivities(), this.fetchCurrentAccount()]).then(_ => {
       this.positionsFetched = true
-      this.gainSeries = [this.getTotalLifetimeDividends(), this.getCapitalGain()]
+
+      if (this.getCapitalGain() > 0)
+        this.gainSeries = [this.getTotalLifetimeDividends(), this.getCapitalGain()]
+      else
+        this.gainSeries = [this.getTotalLifetimeDividends()]
+
+      // Reset labels
+      this.sectorOptions.labels = []
 
       this.getPositions().reduce((a, position) => {
-        this.stocksSeries.push(position.book_value)
+        this.stocksSeries.push(position.market_value)
         const stock = this.getStockFromWSID(position.ws_id)
         this.stocksOptions.labels.push(stock.symbol)
 
-        if(stock.sector === 'Consumer Discretionary') stock.sector = 'Consumer'
-        if(this.sectorOptions.labels.includes(stock.sector)
+        if (stock.sector === 'Consumer Discretionary') stock.sector = 'Consumer'
+        if (this.sectorOptions.labels.includes(stock.sector)
             || (stock.sector === null && this.sectorOptions.labels.includes('Diversified'))) return
+
         this.sectorSeries.push(this.getSectorValue(stock.sector))
         this.sectorOptions.labels.push(stock.sector === null ? 'Diversified' : stock.sector)
       }, 0)
@@ -104,13 +116,33 @@ export default {
 
 <template>
   <div v-if="positionsFetched">
-    <div class="p-10 text-center">
+    <div class="p-5 text-center">
       <div class="uppercase mb-2">Portfolio Value</div>
       <div class="text-4xl">
-        ${{ formnum(currentTotalValue()) }}
+        ${{ formnum(currentTotalMarketValue()) }}
         <span :class="[getTotalGainPercent() >= 0 ? 'text-green-600': 'text-red-600']">
           ({{ formnum(getTotalGainPercent()) }}%)
         </span>
+      </div>
+    </div>
+    <div class="flex flex-wrap justify-around">
+      <div class="p-5 text-center">
+        <div class="uppercase mb-2">Capital</div>
+        <div class="text-4xl">
+          ${{ formnum(getCapitalGain()) }}
+          <span :class="[getCapitalGain() >= 0 ? 'text-green-600': 'text-red-600']">
+            ({{ formnum(getCapitalGainPercent()) }}%)
+          </span>
+        </div>
+      </div>
+      <div class="p-5 text-center">
+        <div class="uppercase mb-2">Dividend</div>
+        <div class="text-4xl">
+          ${{ formnum(getTotalLifetimeDividends()) }}
+          <span :class="[getTotalLifetimeDividends() >= 0 ? 'text-green-600': 'text-red-600']">
+          ({{ formnum(getDividendGainPercent()) }}%)
+          </span>
+        </div>
       </div>
     </div>
 
