@@ -128,7 +128,7 @@ export default {
     <div class="flex flex-wrap justify-around">
       <div class="p-5 text-center">
         <div class="uppercase mb-2">Capital</div>
-        <div class="text-4xl">
+        <div class="text-2xl">
           ${{ formnum(getCapitalGain()) }}
           <span :class="[getCapitalGain() >= 0 ? 'text-green-600': 'text-red-600']">
             ({{ formnum(getCapitalGainPercent()) }}%)
@@ -137,7 +137,7 @@ export default {
       </div>
       <div class="p-5 text-center">
         <div class="uppercase mb-2">Dividend</div>
-        <div class="text-4xl">
+        <div class="text-2xl">
           ${{ formnum(getTotalLifetimeDividends()) }}
           <span :class="[getTotalLifetimeDividends() >= 0 ? 'text-green-600': 'text-red-600']">
           ({{ formnum(getDividendGainPercent()) }}%)
@@ -149,17 +149,17 @@ export default {
     <div class="separator my-5"></div>
 
     <div class="flex flex-wrap justify-around">
-      <div class="min-w-[380px] w-[380px] m-2">
+      <div class="min-w-[380px] w-[30%] m-2">
         <div class="text-center font-bold">Gains</div>
         <apexchart type="pie" :options="gainOptions" :series="gainSeries"></apexchart>
       </div>
 
-      <div class="min-w-[380px] w-[380px] m-2">
+      <div class="min-w-[380px] w-[30%] m-2">
         <div class="text-center font-bold">Stocks</div>
         <apexchart type="pie" :options="stocksOptions" :series="stocksSeries"></apexchart>
       </div>
 
-      <div class="min-w-[380px] w-[380px] m-2">
+      <div class="min-w-[380px] w-[30%] m-2">
         <div class="text-center font-bold">Sectors</div>
         <apexchart type="pie" :options="sectorOptions" :series="sectorSeries"></apexchart>
       </div>
